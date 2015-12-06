@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Restaurant Management</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_menu_home">MENU</string>
+    <string name="title_admin_home">ADMIN</string>
+    <string name="title_activity_add_item">AddItem</string>
+    <string name="title_activity_admin_home">AdminHome</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_main2">Main2Activity</string>
+</resources>
