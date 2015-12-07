@@ -64,9 +64,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:background="#2192ec"
                 android:elevation="@dimen/button_idle"
                 android:stateListAnimator="@anim/button_raise"
-                android:text="LOGIN" />
+                android:text="LOGIN"
+                android:textColor="#ffffff" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

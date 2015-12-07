@@ -27,7 +27,7 @@
         <activity
             android:name=".AddItem"
             android:label="@string/title_activity_add_item"
-            android:theme="@style/AdminTheme"></activity>
+            android:theme="@style/AdminTheme" />
         <activity
             android:name=".AdminHome"
             android:label="@string/title_activity_admin_home"

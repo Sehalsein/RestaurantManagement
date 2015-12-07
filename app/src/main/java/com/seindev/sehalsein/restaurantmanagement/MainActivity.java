@@ -30,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, AdminHome.class));
     }
 
+    public void additem(View view) {
+        startActivity(new Intent(MainActivity.this, AddItem.class));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

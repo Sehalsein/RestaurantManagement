@@ -10,7 +10,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/admin_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/admin_cash_list"/>
 
 
 </LinearLayout>

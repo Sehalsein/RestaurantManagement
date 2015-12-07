@@ -26,7 +26,7 @@ public class AdminCashHomeAdapter extends RecyclerView.Adapter<AdminCashHomeAdap
 
     @Override
     public AdminHomeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.admin_list, parent, false);
+        View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.admin_cash_list, parent, false);
 
         return new AdminHomeViewHolder(layout);
     }

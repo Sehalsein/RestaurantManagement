@@ -10,4 +10,47 @@
     <string name="title_activity_admin_home">AdminHome</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_main2">Main2Activity</string>
+
+
+    <string-array name="categories">
+        <item>Soup</item>
+        <item>Salad</item>
+        <item>Roti</item>
+        <item>Biriyani</item>
+        <item>Rice</item>
+        <item>Noodles</item>
+        <item>Fried Rice</item>
+        <item>Indian</item>
+        <item>Chinese</item>
+        <item>Chicken</item>
+        <item>Mutton</item>
+        <item>Egg</item>
+        <item>Veg</item>
+        <item>Fish</item>
+        <item>Ice Cream</item>
+        <item>Fresh Juice</item>
+        <item>Milk Shakes</item>
+    </string-array>
+
+    <string-array name="tags">
+        <item>Soup</item>
+        <item>Salad</item>
+        <item>Roti</item>
+        <item>Biriyani</item>
+        <item>Rice</item>
+        <item>Noodles</item>
+        <item>Fried Rice</item>
+        <item>Indian</item>
+        <item>Chinese</item>
+        <item>Chicken</item>
+        <item>Mutton</item>
+        <item>Egg</item>
+        <item>Veg</item>
+        <item>Fish</item>
+        <item>Ice Cream</item>
+        <item>Fresh Juice</item>
+        <item>Milk Shakes</item>
+    </string-array>
+
+
 </resources>
