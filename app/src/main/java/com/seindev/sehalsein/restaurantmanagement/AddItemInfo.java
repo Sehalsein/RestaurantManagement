@@ -9,7 +9,7 @@ public class AddItemInfo {
     private String DishName;
     private String Ingredients;
     private String Category;
-    private String SubCategory;
+    private String Tags;
 
     private int Quantity;
     private int Price;
@@ -17,12 +17,12 @@ public class AddItemInfo {
     public AddItemInfo() {
     }
 
-    public AddItemInfo(String DishName, int Price, int Quantity, String Category, String SubCategory) {
+    public AddItemInfo(String DishName, int Price, int Quantity, String Category, String Tags) {
         this.DishName = DishName;
         this.Price = Price;
         this.Quantity = Quantity;
         this.Category = Category;
-        this.SubCategory = SubCategory;
+        this.Tags = Tags;
     }
 
     public int getPrice() {
@@ -41,7 +41,7 @@ public class AddItemInfo {
         return Category;
     }
 
-    public String getSubCategory() {
-        return SubCategory;
+    public String getTags() {
+        return Tags;
     }
 }

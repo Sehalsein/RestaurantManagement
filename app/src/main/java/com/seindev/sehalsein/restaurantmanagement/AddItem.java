@@ -17,6 +17,9 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,9 @@ public class AddItem extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
+
+        //FireBase
+        Firebase.setAndroidContext(this);
 
         //TOOLBAR
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -101,17 +107,37 @@ public class AddItem extends AppCompatActivity {
                 mQuantity = "";
             }
 
+            //FIREBASE ENTRY
+            //LINK
+            Firebase mref = new Firebase("https://burning-heat-4811.firebaseio.com");
+            //CHILD
+            Firebase alanRef = mref.child("food").child("alanisawesome");
 
-            if (mCategory == "" || mDishName == "" || mTags == "" || mPrice == "" || mQuantity == "")
+            //Checks is Values EMPTY
+            if (mCategory == "" || mDishName == "" || mTags == "" || mPrice == "" || mQuantity == "") {
+
                 Toast.makeText(this, "FIELD EMPTY ", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, "ITEM INSERTED", Toast.LENGTH_LONG).show();
+            } else {
 
+                Menu alan = new Menu(mDishName, mPrice, mQuantity, mCategory, mTags);
+                alanRef.setValue(alan, new Firebase.CompletionListener() {
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                        if (firebaseError != null) {
+                            System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                            Toast.makeText(AddItem.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                        } else {
+                            System.out.println("Data saved successfully.");
+                            Toast.makeText(AddItem.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+            }
 
         } catch (NullPointerException n) {
             Toast.makeText(this, "" + n.toString(), Toast.LENGTH_LONG).show();
         }
-
 
     }
 

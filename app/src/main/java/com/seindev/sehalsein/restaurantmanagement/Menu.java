@@ -8,27 +8,27 @@ public class Menu {
     private String DishName;
     private String Ingredients;
     private String Category;
-    private String SubCategory;
+    private String Tags;
 
-    private int Quantity;
-    private int Price;
+    private String Quantity;
+    private String Price;
 
     public Menu() {
     }
 
-    public Menu(String DishName, int Price, int Quantity, String Category, String SubCategory) {
+    public Menu(String DishName, String Price, String Quantity, String Category, String Tags) {
         this.DishName = DishName;
         this.Price = Price;
         this.Quantity = Quantity;
         this.Category = Category;
-        this.SubCategory = SubCategory;
+        this.Tags = Tags;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return Price;
     }
 
-    public int Quantity() {
+    public String getQuantity() {
         return Quantity;
     }
 
@@ -40,7 +40,7 @@ public class Menu {
         return Category;
     }
 
-    public String getSubCategory() {
-        return SubCategory;
+    public String getTags() {
+        return Tags;
     }
 }

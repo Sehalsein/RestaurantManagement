@@ -34,6 +34,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, AddItem.class));
     }
 
+    public void login(View view) {
+        startActivity(new Intent(MainActivity.this, Login.class));
+    }
+
+    public void login1(View view) {
+        startActivity(new Intent(MainActivity.this, Login1.class));
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
