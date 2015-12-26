@@ -18,11 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        
 
-        //TESTING CODE
-        //TESTING MAC
-
-//lkjn
     }
 
     public void menu(View view) {
