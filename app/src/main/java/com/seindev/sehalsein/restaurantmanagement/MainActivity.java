@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //TESTING CODE
+        //TESTING MAC
 
 
     }
