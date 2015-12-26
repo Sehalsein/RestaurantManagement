@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         //TESTING CODE
         //TESTING MAC
 
-
+//lkjn
     }
 
     public void menu(View view) {
