@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, Login1.class));
     }
 
+    public void welcome(View view) {
+        startActivity(new Intent(MainActivity.this, Welcome.class));
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

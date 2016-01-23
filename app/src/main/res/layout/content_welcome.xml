@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.seindev.sehalsein.restaurantmanagement.Welcome"
+    tools:showIn="@layout/activity_welcome">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/welcomebackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageViewLogo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="90dp"
+            android:onClick="icon"
+            android:src="@drawable/cookbook" />
+
+
+        <Button
+            android:id="@+id/buttonDineIn"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/imageViewLogo"
+            android:layout_marginTop="160dp"
+            android:layout_toLeftOf="@+id/imageViewLogo"
+            android:layout_toStartOf="@+id/imageViewLogo"
+            android:background="@drawable/welcomebutton"
+            android:gravity="center"
+            android:onClick="dineIn"
+            android:text="DINE IN"
+            android:textColor="@color/primarytextBlack" />
+
+        <Button
+            android:id="@+id/buttonDelivery"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignTop="@+id/buttonDineIn"
+            android:layout_toEndOf="@+id/imageViewLogo"
+            android:layout_toRightOf="@+id/imageViewLogo"
+            android:background="@drawable/welcomebutton"
+            android:gravity="center"
+            android:onClick="homeDelivery"
+            android:text="HOME DELIVERY"
+            android:textColor="@color/primarytextBlack" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

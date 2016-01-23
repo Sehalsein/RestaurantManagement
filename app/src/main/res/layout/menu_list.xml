@@ -6,7 +6,6 @@
     android:background="#ffffff"
     android:orientation="vertical">
 
-
     <android.support.v7.widget.CardView
         android:id="@+id/menu_list_card"
         android:layout_width="match_parent"
@@ -16,7 +15,6 @@
         android:stateListAnimator="@anim/card_raise"
         card_view:cardCornerRadius="10dp"
         card_view:cardElevation="@dimen/card_idle">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,28 +29,68 @@
                 android:layout_gravity="center"
                 android:background="@color/cardview_dark_background" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#e60000"
-                android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/textDishName"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DISH NAME"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentTop="true"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textIngredients"
+                    <TextView
+                        android:id="@+id/textDishName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DISH NAME"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <TextView
+                        android:id="@+id/textIngredients"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ingredients"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ingredients"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true">
 
+                    <Button
+                        android:id="@+id/buttonminus"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-" />
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/textQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                    <Button
+                        android:id="@+id/buttonplus"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:text="+" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </LinearLayout>
 

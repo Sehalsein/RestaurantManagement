@@ -5,42 +5,54 @@ package com.seindev.sehalsein.restaurantmanagement;
  */
 public class Menu {
 
-    private String DishName;
-    private String Ingredients;
-    private String Category;
-    private String Tags;
-
-    private String Quantity;
-    private String Price;
+    private String sno;
+    private String dishId;
+    private String dishName;
+    private String price;
+    private String quantity;
+    private String category;
+    private String tags;
+    private String spicy;
+    private String ingredients;
 
     public Menu() {
     }
 
-    public Menu(String DishName, String Price, String Quantity, String Category, String Tags) {
-        this.DishName = DishName;
-        this.Price = Price;
-        this.Quantity = Quantity;
-        this.Category = Category;
-        this.Tags = Tags;
+    public Menu(String SNo, String DishId, String DishName, String Price, String Quantity, String Category, String Tags) {
+        this.sno = SNo;
+        this.dishId = DishId;
+        this.dishName = DishName;
+        this.price = Price;
+        this.quantity = Quantity;
+        this.category = Category;
+        this.tags = Tags;
     }
 
-    public String getPrice() {
-        return Price;
+    public String getSNo() {
+        return sno;
     }
 
-    public String getQuantity() {
-        return Quantity;
+    public String getDishId() {
+        return dishId;
     }
 
     public String getDishName() {
-        return DishName;
+        return dishName;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public String getQuantity() {
+        return quantity;
     }
 
     public String getCategory() {
-        return Category;
+        return category;
     }
 
     public String getTags() {
-        return Tags;
+        return tags;
     }
 }

@@ -1,12 +1,7 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
@@ -14,18 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AddItem extends AppCompatActivity {
 
-    private EditText vDishName, vPrice, vQuantity;
+    private EditText vDishName, vPrice, vQuantity, vSno, vDishId;
     private AutoCompleteTextView vCategory;
     private MultiAutoCompleteTextView vTags;
     private String[] categories;
@@ -44,8 +35,10 @@ public class AddItem extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //INITIALIZING
+        vDishId = (EditText) findViewById(R.id.editDishId);
         vDishName = (EditText) findViewById(R.id.editDishName);
         vPrice = (EditText) findViewById(R.id.editPrice);
+        vSno = (EditText) findViewById(R.id.editSNo);
         vQuantity = (EditText) findViewById(R.id.editQuantity);
         vCategory = (AutoCompleteTextView) findViewById(R.id.autocompletetextCategory);
         vTags = (MultiAutoCompleteTextView) findViewById(R.id.multiautocompletetextTags);
@@ -60,6 +53,7 @@ public class AddItem extends AppCompatActivity {
 
         //PRICE
         vPrice.setInputType(InputType.TYPE_CLASS_NUMBER);
+        vSno.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         //QUANTITY
         vQuantity.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -81,16 +75,24 @@ public class AddItem extends AppCompatActivity {
 
     public void Additem(View view) {
 
-        String mDishName, mCategory, mTags;
-        String mPrice, mQuantity;
+        String mDishName, mCategory, mTags, mDishId;
+        String mPrice, mQuantity, mSno;
 
         try {
+            mDishId = String.valueOf(vDishId.getText());
+            mSno = vSno.getText().toString();
             mCategory = String.valueOf(vCategory.getText());
             mDishName = String.valueOf(vDishName.getText());
             mPrice = vPrice.getText().toString();
             mQuantity = vQuantity.getText().toString();
             mTags = String.valueOf(vTags.getText());
 
+            if (vSno.getText().toString().trim().length() <= 0) {
+                mSno = "";
+            }
+            if (vDishId.getText().toString().trim().length() <= 0) {
+                mDishId = "";
+            }
             if (vCategory.getText().toString().trim().length() <= 0) {
                 mCategory = "";
             }
@@ -109,18 +111,18 @@ public class AddItem extends AppCompatActivity {
 
             //FIREBASE ENTRY
             //LINK
-            Firebase mref = new Firebase("https://burning-heat-4811.firebaseio.com");
+            Firebase mref = new Firebase("https://restaurant-managment.firebaseio.com");
             //CHILD
-            Firebase alanRef = mref.child("food").child("alanisawesome");
+            Firebase Ref = mref.child("Menu").child(mSno);
 
             //Checks is Values EMPTY
-            if (mCategory == "" || mDishName == "" || mTags == "" || mPrice == "" || mQuantity == "") {
-
+            if (mCategory == "" || mDishName == "" || mTags == "" || mPrice == "" || mQuantity == "" || mSno == "") {
                 Toast.makeText(this, "FIELD EMPTY ", Toast.LENGTH_LONG).show();
             } else {
 
-                Menu alan = new Menu(mDishName, mPrice, mQuantity, mCategory, mTags);
-                alanRef.setValue(alan, new Firebase.CompletionListener() {
+                Menu menu = new Menu(mSno, mDishId, mDishName, mPrice, mQuantity, mCategory, mTags);
+
+                Ref.setValue(menu, new Firebase.CompletionListener() {
                     @Override
                     public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                         if (firebaseError != null) {

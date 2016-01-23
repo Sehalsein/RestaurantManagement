@@ -7,8 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.*;
+import android.view.MenuItem;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,7 @@ import java.util.List;
  */
 public class MenuHome extends AppCompatActivity {
 
+    private List<Menu> mMenu;
 
     public MenuHome() {
         // Required empty public constructor
@@ -36,6 +41,8 @@ public class MenuHome extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.menu_recycler);
         recyclerView.setHasFixedSize(true);
 
+        mMenu = new ArrayList<>();
+
         //TODO
         /*
            *FOR TABLET USE GRID LAYOUT
@@ -47,9 +54,31 @@ public class MenuHome extends AppCompatActivity {
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
 
-        MenuHomeAdapter menuHomeAdapter = new MenuHomeAdapter(this, createList(7));
+        MenuHomeAdapter menuHomeAdapter = new MenuHomeAdapter(this, mMenu);
+
         recyclerView.setAdapter(menuHomeAdapter);
 
+        Firebase.setAndroidContext(this);
+        Firebase ref = new Firebase("https://restaurant-managment.firebaseio.com/Menu");
+
+        // Attach an listener to read the data at our posts reference
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Menu post = postSnapshot.getValue(Menu.class);
+                    Menu model = postSnapshot.getValue(Menu.class);
+
+                    mMenu.add(model);
+                    //Toast.makeText(MenuHome.this, post.getSNo() + "-" + post.getDishName(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
 
     }
 
@@ -75,7 +104,9 @@ public class MenuHome extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     private List<MenuHomeInfo> createList(int size) {
+
         List<MenuHomeInfo> result = null;
 
         try {
@@ -98,6 +129,7 @@ public class MenuHome extends AppCompatActivity {
         }
 
         return result;
-    }
+    }*/
+
 
 }
