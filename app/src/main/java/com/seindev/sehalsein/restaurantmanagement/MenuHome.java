@@ -6,16 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.firebase.client.Query;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -23,113 +19,75 @@ import java.util.List;
  */
 public class MenuHome extends AppCompatActivity {
 
-    private List<Menu> mMenu;
+    private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
+    private final static String SAVED_ADAPTER_KEYS = "SAVED_ADAPTER_KEYS";
 
-    public MenuHome() {
-        // Required empty public constructor
-    }
+    private Query mQuery;
+    private MenuHomeAdapter mMyAdapter;
+    private ArrayList<Menu> mAdapterItems;
+    private ArrayList<String> mAdapterKeys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_home);
 
+        handleInstanceState(savedInstanceState);
+        setupFirebase();
+        setupRecyclerview();
+    }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    // Restoring the item list and the keys of the items: they will be passed to the adapter
+    private void handleInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null &&
+                savedInstanceState.containsKey(SAVED_ADAPTER_ITEMS) &&
+                savedInstanceState.containsKey(SAVED_ADAPTER_KEYS)) {
+            //  mAdapterItems = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_ADAPTER_ITEMS));
+            mAdapterKeys = savedInstanceState.getStringArrayList(SAVED_ADAPTER_KEYS);
+        } else {
+            mAdapterItems = new ArrayList<Menu>();
+            mAdapterKeys = new ArrayList<String>();
+        }
+    }
 
+    private void setupFirebase() {
+        Firebase.setAndroidContext(this);
+        String firebaseLocation = getResources().getString(R.string.FireBase_Menu_URL);
+        mQuery = new Firebase(firebaseLocation);
+    }
+
+    private void setupRecyclerview() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.menu_recycler);
-        recyclerView.setHasFixedSize(true);
-
-        mMenu = new ArrayList<>();
-
-        //TODO
-        /*
-           *FOR TABLET USE GRID LAYOUT
-            * FOR PHONES USE LINEAR LAYOUT
-            * 25/11/15 NOW CURRENTLY USING OFFLINE TO PASS DEMO VALUES
-         */
-
+        mMyAdapter = new MenuHomeAdapter(mQuery, Menu.class, mAdapterItems, mAdapterKeys);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
-
-        MenuHomeAdapter menuHomeAdapter = new MenuHomeAdapter(this, mMenu);
-
-        recyclerView.setAdapter(menuHomeAdapter);
-
-        Firebase.setAndroidContext(this);
-        Firebase ref = new Firebase("https://restaurant-managment.firebaseio.com/Menu");
-
-        // Attach an listener to read the data at our posts reference
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Menu post = postSnapshot.getValue(Menu.class);
-                    Menu model = postSnapshot.getValue(Menu.class);
-
-                    mMenu.add(model);
-                    //Toast.makeText(MenuHome.this, post.getSNo() + "-" + post.getDishName(), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mMyAdapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_admin_home, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
-    /*
-    private List<MenuHomeInfo> createList(int size) {
+    // Saving the list of items and keys of the items on rotation
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // outState.putParcelable(SAVED_ADAPTER_ITEMS, Parcels.wrap(mMyAdapter.getItems()));
+        outState.putStringArrayList(SAVED_ADAPTER_KEYS, mMyAdapter.getKeys());
+    }
 
-        List<MenuHomeInfo> result = null;
-
-        try {
-            String vDishName[] = {"CHICKEN BURGER", "WAZAAAAP", "SEHAL", "CHRIS", "ASDSDADS", "SEIN"};
-            String vIngredients[] = {"CHICKEN", "AWEXOME", "BATMAN", "ASS", "ASSES", "BRUCE WAYNE"};
-            int vDishIcon = R.mipmap.ic_launcher;
-
-            result = new ArrayList<MenuHomeInfo>();
-            for (int i = 0; i < size; i++) {
-
-                MenuHomeInfo menuHomeInfo = new MenuHomeInfo();
-                menuHomeInfo.vDishIcon = vDishIcon;
-                menuHomeInfo.vDishName = vDishName[i];
-                menuHomeInfo.vIngredients = vIngredients[i];
-
-                result.add(menuHomeInfo);
-            }
-        } catch (Exception e) {
-
-        }
-
-        return result;
-    }*/
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMyAdapter.destroy();
+    }
 }
