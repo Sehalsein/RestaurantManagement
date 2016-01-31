@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
+
 
     }
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void additem(View view) {
-        startActivity(new Intent(MainActivity.this, AddItem.class));
+        startActivity(new Intent(MainActivity.this, AddItemHome.class));
     }
 
     public void login(View view) {
@@ -44,6 +44,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void welcome(View view) {
         startActivity(new Intent(MainActivity.this, Welcome.class));
+    }
+
+    public void settings(View view) {
+        startActivity(new Intent(MainActivity.this, Welcome.class));
+    }
+
+    public void shopping(View view) {
+        startActivity(new Intent(MainActivity.this, ShoppingCartHome.class));
+    }
+
+    public void iteminfo(View view) {
+        startActivity(new Intent(MainActivity.this, ItemDetail.class));
     }
 
 

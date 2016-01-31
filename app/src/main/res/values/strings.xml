@@ -69,6 +69,8 @@
 
     <!-- Strings related to login -->
     <string name="FireBase_Menu_URL">https://restaurant-managment.firebaseio.com/Menu</string>
+    <string name="title_activity_item__detail">Item_Detail</string>
+    <string name="title_activity_shopping_cart">ShoppingCart</string>
 
 
 </resources>
