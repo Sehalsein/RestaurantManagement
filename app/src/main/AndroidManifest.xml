@@ -56,6 +56,17 @@
         <activity
             android:name=".ShoppingCartHome"
             android:label="@string/title_activity_shopping_cart"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Settings"
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".ReviewHome"
+            android:label="@string/title_activity_review_home"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".AddReviewHome"
+            android:label="@string/title_activity_add_review"
             android:theme="@style/AppTheme"></activity>
     </application>
 

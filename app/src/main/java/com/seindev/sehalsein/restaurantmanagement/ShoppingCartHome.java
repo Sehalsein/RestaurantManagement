@@ -64,7 +64,7 @@ public class ShoppingCartHome extends AppCompatActivity {
 
                 ShoppingCart shoppingCart = new ShoppingCart();
                 shoppingCart.name = vLifetime[i];
-                shoppingCart.price = vPreviousLife[i];
+                //shoppingCart.price = vPreviousLife[i];
 
                 result.add(shoppingCart);
             }

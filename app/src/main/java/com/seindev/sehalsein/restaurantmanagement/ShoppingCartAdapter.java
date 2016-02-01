@@ -38,7 +38,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         ShoppingCart adminCashHomeInfo = shoppingCarts.get(position);
 
         holder.vname.setText(adminCashHomeInfo.name);
-        holder.vprice.setText(adminCashHomeInfo.price + "");
+        //holder.vprice.setText(adminCashHomeInfo.price + "");
 
     }
 

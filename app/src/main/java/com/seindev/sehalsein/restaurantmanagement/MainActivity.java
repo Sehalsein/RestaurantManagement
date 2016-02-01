@@ -1,15 +1,19 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
     }
 
@@ -58,6 +61,25 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, ItemDetail.class));
     }
 
+    public void review(View view) {
+        startActivity(new Intent(MainActivity.this, ReviewHome.class));
+    }
+
+    public void addreview(View view) {
+        startActivity(new Intent(MainActivity.this, AddReviewHome.class));
+    }
+
+    public void dialograte(View view) {
+
+        /*
+        RatingDialog ratingDialog = new RatingDialog();
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.main_layout, ratingDialog, "POP");
+        transaction.commit();*/
+        Toast.makeText(this, "SAD", Toast.LENGTH_LONG).show();
+        //startActivity(new Intent(MainActivity.this, ReviewHome.class));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

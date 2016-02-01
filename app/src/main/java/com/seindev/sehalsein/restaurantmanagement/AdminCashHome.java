@@ -52,8 +52,8 @@ public class AdminCashHome extends Fragment {
     }
 
 
-    private List<AdminCashHomeInfo> createList(int size) {
-        List<AdminCashHomeInfo> result = null;
+    private List<AdminCash> createList(int size) {
+        List<AdminCash> result = null;
 
         try {
             int vGrowth[] = {100, 100, 100, 100, 100, 100, 1001, 100, 100};
@@ -77,17 +77,17 @@ public class AdminCashHome extends Fragment {
             };
 
 
-            result = new ArrayList<AdminCashHomeInfo>();
+            result = new ArrayList<AdminCash>();
             for (int i = 0; i < size; i++) {
 
-                AdminCashHomeInfo adminCashHomeInfo = new AdminCashHomeInfo();
-                adminCashHomeInfo.vGrowthIcon = vGrowthIcon;
-                adminCashHomeInfo.vEarning = vEarning[i];
-                adminCashHomeInfo.vGrowth = vGrowth[i];
-                adminCashHomeInfo.vLifetime = vLifetime[i];
-                adminCashHomeInfo.vPreviousLife = vPreviousLife[i];
+                AdminCash adminCash = new AdminCash();
+                adminCash.vGrowthIcon = vGrowthIcon;
+                adminCash.vEarning = vEarning[i];
+                adminCash.vGrowth = vGrowth[i];
+                adminCash.vLifetime = vLifetime[i];
+                adminCash.vPreviousLife = vPreviousLife[i];
 
-                result.add(adminCashHomeInfo);
+                result.add(adminCash);
             }
         } catch (Exception e) {
 

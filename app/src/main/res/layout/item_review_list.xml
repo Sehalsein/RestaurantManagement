@@ -14,7 +14,6 @@
         android:layout_margin="5dp"
         android:clickable="true"
         android:stateListAnimator="@anim/card_raise"
-        card_view:cardCornerRadius="10dp"
         card_view:cardElevation="@dimen/card_idle">
 
         <LinearLayout
@@ -31,12 +30,12 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:background="#00ff99" />
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/cookbook" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/textCustomerName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -62,12 +61,12 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@+id/textRating"
-                    android:layout_toStartOf="@+id/textRating"
+                    android:layout_toLeftOf="@+id/textRatings"
+                    android:layout_toStartOf="@+id/textRatings"
                     android:text="RATED" />
 
                 <TextView
-                    android:id="@+id/textRating"
+                    android:id="@+id/textRatings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -82,6 +81,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/textReview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="REVIEWS" />

@@ -19,6 +19,7 @@ import java.util.ArrayList;
  */
 public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.ViewHolder, Menu> {
 
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView vDishIcon;
@@ -57,13 +58,13 @@ public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.Vie
         holder.vIngredients.setText(item.getCategory());
         holder.vDishName.setText(item.getDishName());
 
-
         holder.vPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("PLUS-MenuHomeAdapter", "ITEM " + item.getDishName());
                 int i = Integer.parseInt(holder.vItemQuantity.getText().toString());
                 holder.vItemQuantity.setText("" + ++i);
+
             }
         });
 

@@ -1,8 +1,6 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
-
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,25 +13,20 @@ import com.firebase.client.Query;
 
 import java.util.ArrayList;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class MenuHome extends AppCompatActivity {
+public class ReviewHome extends AppCompatActivity {
 
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
     private final static String SAVED_ADAPTER_KEYS = "SAVED_ADAPTER_KEYS";
 
     private Query mQuery;
-    private MenuHomeAdapter mMyAdapter;
-    private ArrayList<Menu> mAdapterItems;
+    private ReviewHomeAdapter mMyAdapter;
+    private ArrayList<Review> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_home);
-
+        setContentView(R.layout.activity_review_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -50,25 +43,23 @@ public class MenuHome extends AppCompatActivity {
             //  mAdapterItems = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_ADAPTER_ITEMS));
             mAdapterKeys = savedInstanceState.getStringArrayList(SAVED_ADAPTER_KEYS);
         } else {
-            mAdapterItems = new ArrayList<Menu>();
+            mAdapterItems = new ArrayList<Review>();
             mAdapterKeys = new ArrayList<String>();
         }
     }
 
     private void setupFirebase() {
         Firebase.setAndroidContext(this);
-        String firebaseLocation = getResources().getString(R.string.FireBase_Menu_URL);
+        String firebaseLocation = getResources().getString(R.string.FireBase_Review_URL);
         mQuery = new Firebase(firebaseLocation);
-       //mQuery.orderByChild("ratings").equalTo("K001");
     }
 
     private void setupRecyclerview() {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.menu_recycler);
-        mMyAdapter = new MenuHomeAdapter(mQuery, Menu.class, mAdapterItems, mAdapterKeys);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.review_recycler);
+        mMyAdapter = new ReviewHomeAdapter(mQuery, Review.class, mAdapterItems, mAdapterKeys);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mMyAdapter);
     }
 

@@ -15,4 +15,18 @@
     <color name="primarytextBlack">#000000</color>
 
 
+    <!-- COLORS FOR RATINGS  -->
+    <color name="color10">#ff0000</color>
+    <color name="color20">#eb2013</color>
+    <color name="color30">#f64711</color>
+    <color name="color40">#f1830a</color>
+    <color name="color50">#f49d14</color>
+    <color name="color60">#ffca0a</color>
+    <color name="color70">#f2df15</color>
+    <color name="color80">#d1f01b</color>
+    <color name="color90">#a3cd11</color>
+    <color name="color100">#8eb015</color>
+    <color name="color0">#FFFFFF</color>
+
+
 </resources>

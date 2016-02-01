@@ -17,9 +17,9 @@ public class AdminCashHomeAdapter extends RecyclerView.Adapter<AdminCashHomeAdap
 
 
     Context context;
-    List<AdminCashHomeInfo> adminHomeList;
+    List<AdminCash> adminHomeList;
 
-    public AdminCashHomeAdapter(Context context, List<AdminCashHomeInfo> adminHomeList) {
+    public AdminCashHomeAdapter(Context context, List<AdminCash> adminHomeList) {
         this.context = context;
         this.adminHomeList = adminHomeList;
     }
@@ -34,13 +34,13 @@ public class AdminCashHomeAdapter extends RecyclerView.Adapter<AdminCashHomeAdap
     @Override
     public void onBindViewHolder(AdminHomeViewHolder holder, int position) {
 
-        AdminCashHomeInfo adminCashHomeInfo = adminHomeList.get(position);
+        AdminCash adminCash = adminHomeList.get(position);
 
-        holder.vLifetime.setText(adminCashHomeInfo.vLifetime);
-        holder.vEarning.setText(adminCashHomeInfo.vEarning+"");
-        holder.vGrowth.setText(adminCashHomeInfo.vGrowth+"");
-        holder.vPreviousLife.setText(adminCashHomeInfo.vPreviousLife);
-        holder.vGrowthIcon.setImageResource(adminCashHomeInfo.vGrowthIcon);
+        holder.vLifetime.setText(adminCash.vLifetime);
+        holder.vEarning.setText(adminCash.vEarning+"");
+        holder.vGrowth.setText(adminCash.vGrowth+"");
+        holder.vPreviousLife.setText(adminCash.vPreviousLife);
+        holder.vGrowthIcon.setImageResource(adminCash.vGrowthIcon);
 
     }
 

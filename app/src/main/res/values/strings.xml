@@ -67,10 +67,18 @@
     <string name="title_activity_welcome">Welcome</string>
 
 
-    <!-- Strings related to login -->
+    <!-- Strings related to FIREBASE -->
+    <string name="FireBase_URL">https://restaurant-managment.firebaseio.com</string>
     <string name="FireBase_Menu_URL">https://restaurant-managment.firebaseio.com/Menu</string>
+    <string name="FireBase_Review_URL">https://restaurant-managment.firebaseio.com/Review</string>
+    <string name="FireBase_Order_URL">https://restaurant-managment.firebaseio.com/Order</string>
+
+
     <string name="title_activity_item__detail">Item_Detail</string>
     <string name="title_activity_shopping_cart">ShoppingCart</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_review_home">ReviewHome</string>
+    <string name="title_activity_add_review">AddReview</string>
 
 
 </resources>
