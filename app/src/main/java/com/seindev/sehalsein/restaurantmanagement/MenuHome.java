@@ -38,6 +38,8 @@ public class MenuHome extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         handleInstanceState(savedInstanceState);
+
+        //mMyAdapter = new MenuHomeAdapter(this);
         setupFirebase();
         setupRecyclerview();
     }
@@ -59,7 +61,7 @@ public class MenuHome extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         String firebaseLocation = getResources().getString(R.string.FireBase_Menu_URL);
         mQuery = new Firebase(firebaseLocation);
-       //mQuery.orderByChild("ratings").equalTo("K001");
+        //mQuery.orderByChild("ratings").orderByValue().limitToLast(1);
     }
 
     private void setupRecyclerview() {

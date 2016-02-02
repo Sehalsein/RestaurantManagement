@@ -22,7 +22,6 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -58,16 +57,17 @@
             android:label="@string/title_activity_shopping_cart"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".Settings"
-            android:label="@string/title_activity_settings" />
-        <activity
             android:name=".ReviewHome"
             android:label="@string/title_activity_review_home"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".AddReviewHome"
             android:label="@string/title_activity_add_review"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".AddCustomerHome"
+            android:label="@string/title_activity_add_customer_home"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

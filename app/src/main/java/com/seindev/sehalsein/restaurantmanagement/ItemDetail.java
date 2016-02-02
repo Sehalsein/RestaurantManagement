@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -17,8 +19,10 @@ import com.firebase.client.ValueEventListener;
 public class ItemDetail extends AppCompatActivity {
 
     TextView vCustomerName, vDescription, vIndRatings, vReview;
+    LinearLayout vLayoutReview, vLayoutNoReview;
     RatingBar vRatings;
     Toolbar toolbar;
+    boolean vReviewExist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +31,21 @@ public class ItemDetail extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         vCustomerName = (TextView) findViewById(R.id.customername);
         vDescription = (TextView) findViewById(R.id.textDescription);
         vIndRatings = (TextView) findViewById(R.id.textIndRating);
         vRatings = (RatingBar) findViewById(R.id.ratingBar);
         vReview = (TextView) findViewById(R.id.textReview);
+        vLayoutNoReview = (LinearLayout) findViewById(R.id.layoutNoReview);
+        vLayoutReview = (LinearLayout) findViewById(R.id.layoutReview);
 
         String dishid = "K001";
         setupFirebase(dishid);
@@ -40,16 +53,19 @@ public class ItemDetail extends AppCompatActivity {
     }
 
     public void morereview(View view) {
-        startActivity(new Intent(ItemDetail.this, ReviewHome.class));
+        if (vReviewExist)
+            startActivity(new Intent(ItemDetail.this, ReviewHome.class));
     }
 
     private void setupFirebase(String dishId) {
 
         Firebase.setAndroidContext(this);
         String FirebaselinkMenu = getResources().getString(R.string.FireBase_Menu_URL);
+        //String FirabaseLinkCustoemr = getResources().getString(R.string.FireBase_Customer_URL);
         String FirebaselinkReview = getResources().getString(R.string.FireBase_Review_URL);
         final Firebase mRef = new Firebase(FirebaselinkMenu);
         final Firebase rRef = new Firebase(FirebaselinkReview);
+        //final Firebase cRef = new Firebase(FirabaseLinkCustoemr);
 
         //MENU TABLE
         Query mQuery = mRef.orderByChild("dishId").equalTo(dishId);
@@ -70,6 +86,7 @@ public class ItemDetail extends AppCompatActivity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
+
             }
         });
 
@@ -78,25 +95,57 @@ public class ItemDetail extends AppCompatActivity {
         rQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int i = 0;
-                float avg = 0f;
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Review post = postSnapshot.getValue(Review.class);
+                vReviewExist = dataSnapshot.exists();
+                if (vReviewExist) {
+                    vLayoutNoReview.setVisibility(View.INVISIBLE);
+                    int i = 0;
+                    float avg = 0f;
+                    String customerid = "";
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Review post = postSnapshot.getValue(Review.class);
+                        float mRating = post.getRatings();
+                        vIndRatings.setBackgroundResource(backgroundcolor(mRating));
+                        customerid = post.getCustomerid();
+                        vIndRatings.setText(mRating + "");
+                        vReview.setText(post.getReview());
+                        avg = avg + post.getRatings();
+                        i++;
+                        vRatings.setRating(ratingscaluclate(avg, i));
 
-                    float mRating = post.getRatings();
-
-                    vIndRatings.setBackgroundResource(backgroundcolor(mRating));
-                    vCustomerName.setText(post.getCustomerid());
-                    vIndRatings.setText(mRating + "");
-                    vReview.setText(post.getReview());
-                    avg = avg + post.getRatings();
-                    i++;
-                    vRatings.setRating(ratingscaluclate(avg, i));
-
-                    //Toast.makeText(ItemDetail.this, "RATINGS : " + post.getRatings(), Toast.LENGTH_SHORT).show();
-                    //System.out.println(post.getRatings() + " - " + post.getSNo());
+                        //Toast.makeText(ItemDetail.this, "Exists : " + exist, Toast.LENGTH_SHORT).show();
+                        //System.out.println(post.getRatings() + " - " + post.getSNo());
+                    }
+                    CustomerName(customerid);
+                } else {
+                    //Toast.makeText(ItemDetail.this, "Exists : " + exist, Toast.LENGTH_SHORT).show();
+                    vLayoutReview.setVisibility(View.INVISIBLE);
                 }
+            }
 
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+
+    }
+
+    private void CustomerName(String CustomerId) {
+        //CUSTOMER TABLE
+        Toast.makeText(ItemDetail.this, "CustomerId : " + CustomerId, Toast.LENGTH_SHORT).show();
+        Firebase.setAndroidContext(this);
+        String FirabaselinkCustomer = getResources().getString(R.string.FireBase_Customer_URL);
+        final Firebase cRef = new Firebase(FirabaselinkCustomer);
+        Query cQuery = cRef.orderByChild("customerId").equalTo(CustomerId);
+
+        cQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Customer post = postSnapshot.getValue(Customer.class);
+                    vCustomerName.setText(post.getCustomerName());
+                }
             }
 
             @Override
@@ -104,7 +153,6 @@ public class ItemDetail extends AppCompatActivity {
 
             }
         });
-
     }
 
     private int backgroundcolor(float ratings) {

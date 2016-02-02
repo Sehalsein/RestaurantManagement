@@ -19,7 +19,6 @@ import java.util.ArrayList;
  */
 public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.ViewHolder, Menu> {
 
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView vDishIcon;
@@ -58,12 +57,42 @@ public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.Vie
         holder.vIngredients.setText(item.getCategory());
         holder.vDishName.setText(item.getDishName());
 
+        final int mSno = 1;
+        final int mPrice = Integer.parseInt(item.getPrice());
+        final int[] mQuantity = {0};
+        final String mDishId = item.getDishId();
+        final String mDishName = item.getDishName();
+        final String mBillNo = "B001";
+        final String mTableNo = "Table1";
+
+
         holder.vPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("PLUS-MenuHomeAdapter", "ITEM " + item.getDishName());
                 int i = Integer.parseInt(holder.vItemQuantity.getText().toString());
                 holder.vItemQuantity.setText("" + ++i);
+              /*  mQuantity[0] = ++i;
+                Firebase.setAndroidContext(context);
+                Firebase mref = new Firebase("https://restaurant-managment.firebaseio.com");
+                //CHILD
+                Firebase Ref = mref.child("Order").child(mSno + "");
+
+                Order menu = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity[0], mPrice, mTableNo);
+
+                Ref.setValue(menu, new Firebase.CompletionListener() {
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                        if (firebaseError != null) {
+                            System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                            //Toast.makeText(.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                        } else {
+                            System.out.println("Data saved successfully.");
+                            //Toast.makeText(AddItemHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });*/
+
 
             }
         });
