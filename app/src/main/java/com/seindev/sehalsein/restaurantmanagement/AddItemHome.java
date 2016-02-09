@@ -11,8 +11,10 @@ import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 public class AddItemHome extends AppCompatActivity {
 
@@ -47,6 +49,9 @@ public class AddItemHome extends AppCompatActivity {
         categories = getResources().getStringArray(R.array.categories);
         tags = getResources().getStringArray(R.array.tags);
 
+        vSno.setEnabled(false);
+        vDishId.requestFocus();
+
         //INPUT TYPES
         //DISHNAME
         vDishName.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -69,14 +74,41 @@ public class AddItemHome extends AppCompatActivity {
         vTags.setThreshold(1);
         vTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
+        setUpFirebase();
 
     }
 
+    private void setUpFirebase() {
+        Firebase.setAndroidContext(this);
+        final int[] Sno = new int[1];
+        Firebase mRef = new Firebase("https://restaurant-managment.firebaseio.com/Menu");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Menu post = postSnapshot.getValue(Menu.class);
+                    int sno = Integer.parseInt(post.getSNo());
+                    vSno.setText(++sno + "");
+
+                    //Toast.makeText(AddItemHome.this, "Exists : " + sno, Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
 
     public void Additem(View view) {
 
         String mDishName, mCategory, mTags, mDishId;
         String mPrice, mQuantity, mSno;
+
+        final int[] Sno = new int[1];
 
         try {
             mDishId = String.valueOf(vDishId.getText());
@@ -109,13 +141,10 @@ public class AddItemHome extends AppCompatActivity {
                 mQuantity = "";
             }
 
-            //FIREBASE ENTRY
-            //LINK
-            Firebase mref = new Firebase("https://restaurant-managment.firebaseio.com");
-            //CHILD
-            Firebase Ref = mref.child("Menu").child(mSno);
+            Firebase mRef = new Firebase("https://restaurant-managment.firebaseio.com");
+            Firebase Ref = mRef.child("Menu").child(mSno);
 
-            //Checks is Values EMPTY
+
             if (mCategory == "" || mDishName == "" || mTags == "" || mPrice == "" || mQuantity == "" || mSno == "") {
                 Toast.makeText(this, "FIELD EMPTY ", Toast.LENGTH_LONG).show();
             } else {

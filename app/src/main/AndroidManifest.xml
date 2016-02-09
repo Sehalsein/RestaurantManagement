@@ -51,11 +51,11 @@
         <activity
             android:name=".ItemDetail"
             android:label="@string/title_activity_item__detail"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/MenuTheme" />
         <activity
             android:name=".ShoppingCartHome"
             android:label="@string/title_activity_shopping_cart"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/MenuTheme" />
         <activity
             android:name=".ReviewHome"
             android:label="@string/title_activity_review_home"

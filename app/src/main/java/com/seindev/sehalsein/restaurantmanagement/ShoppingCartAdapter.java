@@ -1,61 +1,101 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
-import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
+import com.firebase.client.Query;
+
+import java.util.ArrayList;
 
 /**
  * Created by sehalsein on 31/01/16.
  */
-public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder> {
+public class ShoppingCartAdapter extends FirebaseRecyclerAdapter<ShoppingCartAdapter.ViewHolder, Order> {
 
-    Context context;
-    List<ShoppingCart> shoppingCarts;
+    private int vTotalAmount;
+    private ShoppingCart shoppingCart;
 
-    public ShoppingCartAdapter(Context context, List<ShoppingCart> shoppingCarts) {
-        this.context = context;
-        this.shoppingCarts = shoppingCarts;
+    public void send(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 
-    public ShoppingCartAdapter() {
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-    @Override
-    public ShoppingCartViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layout = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list, parent, false);
+        TextView vQuantity, vDishName, vPrice, vTotalPrice;
 
-        return new ShoppingCartViewHolder(layout);
-    }
+        public ViewHolder(View view) {
+            super(view);
+            vDishName = (TextView) view.findViewById(R.id.textDishName);
+            vQuantity = (TextView) view.findViewById(R.id.textQuantity);
+            vPrice = (TextView) view.findViewById(R.id.textPrice);
 
-    @Override
-    public void onBindViewHolder(ShoppingCartViewHolder holder, int position) {
-
-        ShoppingCart adminCashHomeInfo = shoppingCarts.get(position);
-
-        holder.vname.setText(adminCashHomeInfo.name);
-        //holder.vprice.setText(adminCashHomeInfo.price + "");
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return shoppingCarts.size();
-    }
-
-    public static class ShoppingCartViewHolder extends RecyclerView.ViewHolder {
-
-
-        TextView vname, vprice;
-
-        public ShoppingCartViewHolder(View itemView) {
-            super(itemView);
-            vname = (TextView) itemView.findViewById(R.id.name);
-            vprice = (TextView) itemView.findViewById(R.id.price);
         }
     }
+
+
+    public ShoppingCartAdapter(Query query, Class<Order> itemClass, @Nullable ArrayList<Order> items,
+                               @Nullable ArrayList<String> keys) {
+        super(query, itemClass, items, keys);
+    }
+
+    @Override
+    public ShoppingCartAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.order_list, parent, false);
+
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(final ShoppingCartAdapter.ViewHolder holder, final int position) {
+        final Order item = getItem(position);
+
+        int totalprice, price, quantity;
+        price = item.getPrice();
+        quantity = item.getQuantity();
+        totalprice = price * quantity;
+
+        vTotalAmount += totalprice;
+
+        holder.vPrice.setText(totalprice + "");
+        holder.vDishName.setText(item.getDishName());
+        holder.vQuantity.setText(item.getQuantity() + "");
+
+        if (shoppingCart != null) {
+            shoppingCart.send(vTotalAmount);
+        }
+
+
+    }
+
+
+    @Override
+    protected void itemAdded(Order item, String key, int position) {
+        Log.d("ShoppingCartAdapter", "Added a new item to the adapter.");
+    }
+
+    @Override
+    protected void itemChanged(Order oldItem, Order newItem, String key, int position) {
+        Log.d("ShoppingCartAdapter", "Changed an item.");
+
+    }
+
+    @Override
+    protected void itemRemoved(Order item, String key, int position) {
+        Log.d("ShoppingCartAdapter", "Removed an item from the adapter.");
+
+    }
+
+    @Override
+    protected void itemMoved(Order item, String key, int oldPosition, int newPosition) {
+        Log.d("ShoppingCartAdapter", "Moved an item.");
+
+    }
+
+
 }

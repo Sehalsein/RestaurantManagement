@@ -19,24 +19,36 @@ import java.util.ArrayList;
  */
 public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.ViewHolder, Menu> {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    private MenuClickListener menuClickListener;
+
+    public void setMenuClickListener(MenuClickListener menuClickListener) {
+        this.menuClickListener = menuClickListener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView vDishIcon;
         TextView vDishName, vCategory, vItemQuantity, vIngredients;
-        Button vPlus, vMinus;
+        Button vtest;
 
         public ViewHolder(View view) {
             super(view);
-
+            view.setOnClickListener(this);
+            vtest = (Button) view.findViewById(R.id.bttest);
             vDishName = (TextView) view.findViewById(R.id.textDishName);
             vIngredients = (TextView) view.findViewById(R.id.textIngredients);
             vDishIcon = (ImageView) view.findViewById(R.id.imageDishIcon);
-            vMinus = (Button) view.findViewById(R.id.buttonminus);
-            vPlus = (Button) view.findViewById(R.id.buttonplus);
-            vItemQuantity = (TextView) view.findViewById(R.id.textItemQuantity);
 
         }
+
+        @Override
+        public void onClick(View v) {
+            if (menuClickListener != null) {
+               // menuClickListener.itemClicked(v, 5);
+            }
+        }
     }
+
 
     public MenuHomeAdapter(Query query, Class<Menu> itemClass, @Nullable ArrayList<Menu> items,
                            @Nullable ArrayList<String> keys) {
@@ -57,55 +69,16 @@ public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.Vie
         holder.vIngredients.setText(item.getCategory());
         holder.vDishName.setText(item.getDishName());
 
-        final int mSno = 1;
-        final int mPrice = Integer.parseInt(item.getPrice());
-        final int[] mQuantity = {0};
-        final String mDishId = item.getDishId();
-        final String mDishName = item.getDishName();
-        final String mBillNo = "B001";
-        final String mTableNo = "Table1";
-
-
-        holder.vPlus.setOnClickListener(new View.OnClickListener() {
+        holder.vtest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("PLUS-MenuHomeAdapter", "ITEM " + item.getDishName());
-                int i = Integer.parseInt(holder.vItemQuantity.getText().toString());
-                holder.vItemQuantity.setText("" + ++i);
-              /*  mQuantity[0] = ++i;
-                Firebase.setAndroidContext(context);
-                Firebase mref = new Firebase("https://restaurant-managment.firebaseio.com");
-                //CHILD
-                Firebase Ref = mref.child("Order").child(mSno + "");
-
-                Order menu = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity[0], mPrice, mTableNo);
-
-                Ref.setValue(menu, new Firebase.CompletionListener() {
-                    @Override
-                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                        if (firebaseError != null) {
-                            System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                            //Toast.makeText(.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
-                        } else {
-                            System.out.println("Data saved successfully.");
-                            //Toast.makeText(AddItemHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });*/
-
-
+                if (menuClickListener != null) {
+                    menuClickListener.itemClicked(v, item.getDishId());
+                }
             }
         });
 
-        holder.vMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("MINUS-MenuHomeAdapter", "ITEM " + item.getDishName());
-                int i = Integer.parseInt(holder.vItemQuantity.getText().toString());
-                if (i > 0)
-                    holder.vItemQuantity.setText("" + --i);
-            }
-        });
+
     }
 
     @Override

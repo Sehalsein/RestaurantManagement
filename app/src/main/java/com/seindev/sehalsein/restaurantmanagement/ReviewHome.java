@@ -1,11 +1,13 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -29,10 +31,26 @@ public class ReviewHome extends AppCompatActivity {
         setContentView(R.layout.activity_review_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
+        Intent intent = getIntent();
+        String dishid = intent.getStringExtra("DishId");
+        if (dishid == null) {
+            dishid = "K001";
+        }
 
         handleInstanceState(savedInstanceState);
-        setupFirebase();
+        setupFirebase(dishid);
         setupRecyclerview();
+
+
     }
 
     // Restoring the item list and the keys of the items: they will be passed to the adapter
@@ -48,9 +66,9 @@ public class ReviewHome extends AppCompatActivity {
         }
     }
 
-    private void setupFirebase() {
+    private void setupFirebase(String DishId) {
         Firebase.setAndroidContext(this);
-        String firebaseLocation = getResources().getString(R.string.FireBase_Review_URL);
+        String firebaseLocation = getResources().getString(R.string.FireBase_Review_URL) + "/" + DishId;
         mQuery = new Firebase(firebaseLocation);
     }
 

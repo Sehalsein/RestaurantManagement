@@ -61,9 +61,9 @@ public class AddReviewHome extends AppCompatActivity {
             }
 
             Firebase.setAndroidContext(this);
-            String mFirebaseUrl = getResources().getString(R.string.FireBase_URL);
+            String mFirebaseUrl = getResources().getString(R.string.FireBase_Review_URL);
             Firebase firebase = new Firebase(mFirebaseUrl);
-            Firebase mRef = firebase.child("Review").child(mSno + "");
+            Firebase mRef = firebase.child(mDishId).child(mSno + "");
 
             if (mDishId == "" || mReview == "" || mCustomerId == "" || mSno == 0) {
                 Toast.makeText(this, "FIELD EMPTY ", Toast.LENGTH_LONG).show();
