@@ -65,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, ReviewHome.class));
     }
 
+    public void kitchen(View view) {
+        startActivity(new Intent(MainActivity.this, KitchenHome.class));
+    }
+
     public void addreview(View view) {
         startActivity(new Intent(MainActivity.this, AddReviewHome.class));
     }

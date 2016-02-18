@@ -3,20 +3,34 @@ package com.seindev.sehalsein.restaurantmanagement;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AdminCashHome extends Fragment {
+
+
+    private String mDate;
+    private Calendar cal;
+
+    private TextView vTextToday;
+    private TextView vTextYesterday;
+    private TextView vTextGrowthYesterday;
+    private TextView vTextEarnings;
 
     public static AdminCashHome newInstance() {
         AdminCashHome fragment = new AdminCashHome();
@@ -26,74 +40,170 @@ public class AdminCashHome extends Fragment {
     public AdminCashHome() {
         // Required empty public constructor
     }
-/*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_admin_cash_home);
-
-    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_admin_cash_home, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.admin_recycler);
-        recyclerView.setHasFixedSize(true);
+        vTextToday = (TextView) layout.findViewById(R.id.textTodayEarning);
+        vTextYesterday = (TextView) layout.findViewById(R.id.textYesterdayEarning);
+        vTextGrowthYesterday = (TextView) layout.findViewById(R.id.textYesterdayGrowth);
+        vTextEarnings = (TextView) layout.findViewById(R.id.textEarning);
 
-        LinearLayoutManager linearLayout = new LinearLayoutManager(getActivity());
-        linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(linearLayout);
+        cal = Calendar.getInstance();
+        mDate = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
 
-        AdminCashHomeAdapter adminCashHomeAdapter = new AdminCashHomeAdapter(getActivity(), createList(7));
-        recyclerView.setAdapter(adminCashHomeAdapter);
+        setupFireBaseToday();
+        setupFireBaseYesterday();
+        setupFireBaseLifeTime();
 
         return layout;
     }
 
+    private void setupFireBaseLifeTime() {
 
-    private List<AdminCash> createList(int size) {
-        List<AdminCash> result = null;
-
-        try {
-            int vGrowth[] = {100, 100, 100, 100, 100, 100, 1001, 100, 100};
-            int vEarning[] = {100, 100, 100, 100, 100, 100, 1001, 100, 100};
-            int vGrowthIcon = R.mipmap.ic_launcher;
-
-            String vLifetime[] = {
-                    "Today so far",
-                    "Yesterday",
-                    "This month so far",
-                    "Last month",
-                    "Lifetime",
-            };
-
-            String vPreviousLife[] = {
-                    " ",
-                    "vs the same day last week",
-                    "vs the same day last month",
-                    "vs the month before last",
-                    " ",
-            };
-
-
-            result = new ArrayList<AdminCash>();
-            for (int i = 0; i < size; i++) {
-
-                AdminCash adminCash = new AdminCash();
-                adminCash.vGrowthIcon = vGrowthIcon;
-                adminCash.vEarning = vEarning[i];
-                adminCash.vGrowth = vGrowth[i];
-                adminCash.vLifetime = vLifetime[i];
-                adminCash.vPreviousLife = vPreviousLife[i];
-
-                result.add(adminCash);
+        String mFireBaseLinkBill = getResources().getString(R.string.FireBase_Bill_URL);
+        Firebase bRef = new Firebase(mFireBaseLinkBill);
+        bRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                float mLifeTime = 0;
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Bill post = postSnapshot.getValue(Bill.class);
+                    System.out.println(post.getBillNo() + " - " + post.getDate());
+                    mLifeTime += post.getPrice();
+                }
+                vTextEarnings.setText("Rs " + mLifeTime);
             }
-        } catch (Exception e) {
 
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private void setupFireBaseYesterday() {
+        cal.add(Calendar.DATE, -1);
+        String mYesterdayDate = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+        cal.add(Calendar.DATE, -7);
+        String mLastWeekDate = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+        Firebase.setAndroidContext(getActivity());
+
+        final float[] mYesterdayAmount = new float[1];
+        final float[] mLastWeekAmount = new float[1];
+
+        String mFireBaseLinkBill = getResources().getString(R.string.FireBase_Bill_URL);
+        Firebase bRef = new Firebase(mFireBaseLinkBill);
+        Query bQuery = bRef.orderByChild("date").equalTo(mYesterdayDate);
+        bQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                float mYesterday = 0;
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Bill post = postSnapshot.getValue(Bill.class);
+                    System.out.println(post.getBillNo() + " - " + post.getDate());
+                    mYesterday += post.getPrice();
+                }
+                vTextYesterday.setText("Rs " + mYesterday);
+                mYesterdayAmount[0] = mYesterday;
+                calculateYesterday(mYesterdayAmount[0], mLastWeekAmount[0]);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+
+        Query bLQuery = bRef.orderByChild("date").equalTo(mLastWeekDate);
+        bLQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                float mLastWeek = 0;
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Bill post = postSnapshot.getValue(Bill.class);
+                    System.out.println(post.getBillNo() + " LAST WEEK - " + post.getPrice());
+                    mLastWeek += post.getPrice();
+
+
+                }
+                mLastWeekAmount[0] = mLastWeek;
+                calculateYesterday(mYesterdayAmount[0], mLastWeekAmount[0]);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+    }
+
+    private void calculateYesterday(float mTotalYesterday, float mTotalLastWeek) {
+
+        float mYesterday = mTotalYesterday;
+        float mLastWeek = mTotalLastWeek;
+        boolean growth = false;
+        float mDiffrence = 0;
+
+        if (mLastWeek > mYesterday) {
+            mDiffrence = mLastWeek - mYesterday;
+            growth = false;
+        } else if (mYesterday > mLastWeek) {
+            mDiffrence = mYesterday - mLastWeek;
+            growth = true;
         }
 
-        return result;
+        float mPercentage = (mDiffrence / mLastWeek) * 100;
+
+        if (growth) {
+            vTextGrowthYesterday.setTextColor(getResources().getColor(R.color.color100));
+        } else {
+            vTextGrowthYesterday.setTextColor(getResources().getColor(R.color.color10));
+        }
+        vTextGrowthYesterday.setText(mPercentage + "%");
+
     }
+
+    private void setupFireBaseToday() {
+
+        Firebase.setAndroidContext(getActivity());
+
+        String mFireBaseLinkBill = getResources().getString(R.string.FireBase_Bill_URL);
+        Firebase bRef = new Firebase(mFireBaseLinkBill);
+
+        Query bQuery = bRef.orderByChild("date").equalTo(mDate);
+
+
+        bQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                float mTotalAmount = 0;
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Bill post = postSnapshot.getValue(Bill.class);
+                    System.out.println(post.getBillNo() + " - " + post.getDate());
+                    mTotalAmount += post.getPrice();
+                }
+                vTextToday.setText("Rs " + mTotalAmount);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+    }
+
 
 }

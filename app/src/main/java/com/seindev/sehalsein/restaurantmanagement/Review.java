@@ -10,10 +10,12 @@ package com.seindev.sehalsein.restaurantmanagement;
 
 
 public class Review {
+
     private String customerid;
     private String dishid;
     private String review;
     private int sno;
+    private String date;
 
     //TODO RATING FLOAT
     private int ratings;

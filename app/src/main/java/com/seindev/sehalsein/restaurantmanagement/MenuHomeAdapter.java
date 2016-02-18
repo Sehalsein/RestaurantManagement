@@ -52,6 +52,7 @@ public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.Vie
 
     public MenuHomeAdapter(Query query, Class<Menu> itemClass, @Nullable ArrayList<Menu> items,
                            @Nullable ArrayList<String> keys) {
+
         super(query, itemClass, items, keys);
     }
 

@@ -15,6 +15,12 @@ public class Order {
     public Order() {
     }
 
+    public Order(String tableNo, String billNo, int sno) {
+        this.tableNo = tableNo;
+        this.billNo = billNo;
+        this.sno = sno;
+    }
+
     public Order(int sno, String billNo, String dishId, String dishName, int quantity, int price, String tableNo) {
         this.sno = sno;
         this.billNo = billNo;

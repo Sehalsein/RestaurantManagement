@@ -73,6 +73,9 @@
     <string name="FireBase_Customer_URL">https://restaurant-managment.firebaseio.com/Customer</string>
     <string name="FireBase_Review_URL">https://restaurant-managment.firebaseio.com/Review</string>
     <string name="FireBase_Order_URL">https://restaurant-managment.firebaseio.com/Order</string>
+    <string name="FireBase_OrderDetail_URL">https://restaurant-managment.firebaseio.com/OrderDetail</string>
+    <string name="FireBase_Bill_URL">https://restaurant-managment.firebaseio.com/Bill</string>
+    <string name="FireBase_Open_URL">https://restaurant-managment.firebaseio.com/Open</string>
 
 
     <string name="title_activity_item__detail">Item_Detail</string>
@@ -81,6 +84,7 @@
     <string name="title_activity_review_home">ReviewHome</string>
     <string name="title_activity_add_review">AddReview</string>
     <string name="title_activity_add_customer_home">AddCustomerHome</string>
+    <string name="title_activity_kitchen_home">KitchenHome</string>
 
 
 </resources>

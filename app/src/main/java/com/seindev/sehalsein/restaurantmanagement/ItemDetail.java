@@ -23,6 +23,8 @@ public class ItemDetail extends AppCompatActivity {
     private RatingBar vRatings;
     private Toolbar toolbar;
 
+    private String mTableNo;
+
     boolean vReviewExist;
     boolean vOrderExist;
     String mDishName, mDishId;
@@ -31,8 +33,8 @@ public class ItemDetail extends AppCompatActivity {
     int mPrice;
     int mSno = 0;
     String dishid;
-    String mBillNo = "B001";
-    String mTableNo = "T001";
+    String mBillNo;
+    //String mTableNo = "T001";
 
 
     @Override
@@ -63,14 +65,18 @@ public class ItemDetail extends AppCompatActivity {
 
         Intent intent = getIntent();
         dishid = intent.getStringExtra("DishId");
+        mTableNo = intent.getStringExtra("TableNo");
+        mBillNo = intent.getStringExtra("BillNo");
+
         if (dishid == null) {
             dishid = "K001";
         }
 
-        //Toast.makeText(this, "DISH ID ITEM : " + dishid, Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, "Table NO : " + mTableNo, Toast.LENGTH_LONG).show();
         setupFirebase(dishid);
 
     }
+
 
     public void morereview(View view) {
         if (vReviewExist) {
@@ -88,7 +94,7 @@ public class ItemDetail extends AppCompatActivity {
         String FirebaselinkMenu = getResources().getString(R.string.FireBase_Menu_URL);
         String FirabaseLinkCustoemr = getResources().getString(R.string.FireBase_Customer_URL);
         String FirebaselinkReview = getResources().getString(R.string.FireBase_Review_URL) + "/" + dishId;
-        String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL);
+        String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableNo;
 
         final Firebase mRef = new Firebase(FirebaselinkMenu);
         final Firebase rRef = new Firebase(FirebaselinkReview);
@@ -167,7 +173,6 @@ public class ItemDetail extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Order post = postSnapshot.getValue(Order.class);
                     mSno = post.getSno();
-
                     // Toast.makeText(ItemDetail.this, "Exists : " + mSno, Toast.LENGTH_SHORT).show();
 
                 }
@@ -287,12 +292,12 @@ public class ItemDetail extends AppCompatActivity {
         mQuantity++;
 
         Firebase.setAndroidContext(this);
-        String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL);
 
-        Firebase mref = new Firebase("https://restaurant-managment.firebaseio.com");
-        Firebase Ref = mref.child("Order").child("" + mSno);
-        Order menu = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
-        Ref.setValue(menu, new Firebase.CompletionListener() {
+        String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL);
+        Firebase mref = new Firebase(FirebaselinkOrder);
+        Firebase Ref = mref.child(mTableNo).child("" + mSno);
+        Order order = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
+        Ref.setValue(order, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
@@ -304,9 +309,27 @@ public class ItemDetail extends AppCompatActivity {
                 }
             }
         });
+
+        String FirebaselinkOrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL);
+        Firebase mRef = new Firebase(FirebaselinkOrderDetail);
+        Firebase ref = mRef.child(mBillNo).child("" + mSno);
+        Order orderdetail = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
+        ref.setValue(orderdetail, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                    //Toast.makeText(.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                } else {
+                    System.out.println("Data saved successfully.");
+                    //Toast.makeText(AddItemHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
     }
 
-    //TODO DO 0 QUANTITY REMOVE ENTRY
     public void buttonminus(View view) {
 
         if (mQuantity > 0) {
@@ -314,8 +337,8 @@ public class ItemDetail extends AppCompatActivity {
             Firebase.setAndroidContext(this);
             String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL);
 
-            Firebase mref = new Firebase("https://restaurant-managment.firebaseio.com");
-            Firebase Ref = mref.child("Order").child("" + mSno);
+            Firebase mref = new Firebase(FirebaselinkOrder);
+            Firebase Ref = mref.child(mTableNo).child("" + mSno);
             Order menu = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
             Ref.setValue(menu, new Firebase.CompletionListener() {
                 @Override
@@ -329,6 +352,34 @@ public class ItemDetail extends AppCompatActivity {
                     }
                 }
             });
+
+            String FirebaselinkOrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL);
+            Firebase mRef = new Firebase(FirebaselinkOrderDetail);
+            Firebase ref = mRef.child(mBillNo).child("" + mSno);
+            Order orderdetail = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
+            ref.setValue(orderdetail, new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError != null) {
+                        System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                        //Toast.makeText(.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                    } else {
+                        System.out.println("Data saved successfully.");
+                        //Toast.makeText(AddItemHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            if (mQuantity == 0) {
+                String OrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL) + "/" + mBillNo + "/" + mSno;
+                String Order = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableNo + "/" + mSno;
+                Firebase mDelete = new Firebase(OrderDetail);
+                Firebase mOrderDelete = new Firebase(Order);
+                mOrderDelete.removeValue();
+                mDelete.removeValue();
+            }
+
+
         }
 
     }
@@ -343,7 +394,12 @@ public class ItemDetail extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(ItemDetail.this, ShoppingCartHome.class));
+
+                Intent intent = new Intent(ItemDetail.this, ShoppingCartHome.class);
+                intent.putExtra("TableNo", mTableNo);
+                intent.putExtra("BillNo", mBillNo);
+                startActivity(intent);
+
                 return true;
 
 

@@ -25,6 +25,9 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
     private final static String SAVED_ADAPTER_KEYS = "SAVED_ADAPTER_KEYS";
 
+    private String mBillNo;
+    private String mTableNo;
+
     private Query mQuery;
     private MenuHomeAdapter mMyAdapter;
     private ArrayList<Menu> mAdapterItems;
@@ -41,7 +44,10 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
 
         handleInstanceState(savedInstanceState);
 
-        //mMyAdapter = new MenuHomeAdapter(this);
+        Intent intent = getIntent();
+        mTableNo = intent.getStringExtra("TableNo");
+        mBillNo = intent.getStringExtra("BillNo");
+
         setupFirebase();
         setupRecyclerview();
     }
@@ -62,8 +68,12 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
     private void setupFirebase() {
         Firebase.setAndroidContext(this);
         String firebaseLocation = getResources().getString(R.string.FireBase_Menu_URL);
+
+        //QUERY
+        //mQuery = new Firebase(firebaseLocation).orderByChild("category").equalTo("burger");
+
         mQuery = new Firebase(firebaseLocation);
-        //mQuery.orderByChild("ratings").orderByValue().limitToLast(1);
+
     }
 
     private void setupRecyclerview() {
@@ -73,7 +83,6 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mMyAdapter);
     }
 
@@ -87,7 +96,12 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(MenuHome.this, ShoppingCartHome.class));
+
+                Intent intent = new Intent(MenuHome.this, ShoppingCartHome.class);
+                intent.putExtra("TableNo", mTableNo);
+                intent.putExtra("BillNo", mBillNo);
+                startActivity(intent);
+
                 return true;
 
             default:
@@ -114,9 +128,10 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
 
     @Override
     public void itemClicked(View view, String DishId) {
-
         Intent intent = new Intent(MenuHome.this, ItemDetail.class);
         intent.putExtra("DishId", DishId);
+        intent.putExtra("TableNo", mTableNo);
+        intent.putExtra("BillNo", mBillNo);
         startActivity(intent);
     }
 }

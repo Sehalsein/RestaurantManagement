@@ -33,6 +33,12 @@
             android:onClick="icon"
             android:src="@drawable/cookbook" />
 
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ENTER TABLE NO (T001)" />
+
 
         <Button
             android:id="@+id/buttonDineIn"

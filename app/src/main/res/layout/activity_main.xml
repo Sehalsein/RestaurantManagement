@@ -123,6 +123,12 @@
                 android:onClick="addcustomer"
                 android:text="Add Customer" />
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:onClick="kitchen"
+                android:text="Kitchen" />
+
         </LinearLayout>
 
     </LinearLayout>

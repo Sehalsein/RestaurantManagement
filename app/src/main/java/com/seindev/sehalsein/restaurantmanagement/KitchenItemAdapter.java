@@ -13,9 +13,9 @@ import com.firebase.client.Query;
 import java.util.ArrayList;
 
 /**
- * Created by sehalsein on 31/01/16.
+ * Created by sehalsein on 14/02/16.
  */
-public class ShoppingCartAdapter extends FirebaseRecyclerAdapter<ShoppingCartAdapter.ViewHolder, Order> {
+public class KitchenItemAdapter extends FirebaseRecyclerAdapter<KitchenItemAdapter.ViewHolder, Order> {
 
     private int vTotalAmount;
     private ShoppingCart shoppingCart;
@@ -26,49 +26,36 @@ public class ShoppingCartAdapter extends FirebaseRecyclerAdapter<ShoppingCartAda
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView vQuantity, vDishName, vPrice, vTotalPrice;
+        TextView vQuantity, vDishName;
 
         public ViewHolder(View view) {
             super(view);
             vDishName = (TextView) view.findViewById(R.id.textDishName);
             vQuantity = (TextView) view.findViewById(R.id.textQuantity);
-            vPrice = (TextView) view.findViewById(R.id.textPrice);
 
         }
     }
 
 
-    public ShoppingCartAdapter(Query query, Class<Order> itemClass, @Nullable ArrayList<Order> items,
-                               @Nullable ArrayList<String> keys) {
+    public KitchenItemAdapter(Query query, Class<Order> itemClass, @Nullable ArrayList<Order> items,
+                              @Nullable ArrayList<String> keys) {
         super(query, itemClass, items, keys);
     }
 
     @Override
-    public ShoppingCartAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public KitchenItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.order_list, parent, false);
+                .inflate(R.layout.kitchen_item_list, parent, false);
 
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ShoppingCartAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final KitchenItemAdapter.ViewHolder holder, final int position) {
         final Order item = getItem(position);
 
-        int totalprice, price, quantity;
-        price = item.getPrice();
-        quantity = item.getQuantity();
-        totalprice = price * quantity;
-
-        vTotalAmount += totalprice;
-
-        holder.vPrice.setText(totalprice + "");
         holder.vDishName.setText(item.getDishName());
         holder.vQuantity.setText(item.getQuantity() + "");
-
-        if (shoppingCart != null) {
-            shoppingCart.send(vTotalAmount, item.getBillNo(), item.getTableNo());
-        }
 
 
     }
@@ -76,24 +63,24 @@ public class ShoppingCartAdapter extends FirebaseRecyclerAdapter<ShoppingCartAda
 
     @Override
     protected void itemAdded(Order item, String key, int position) {
-        Log.d("ShoppingCartAdapter", "Added a new item to the adapter.");
+        Log.d("KitchenItemAdapter", "Added a new item to the adapter.");
     }
 
     @Override
     protected void itemChanged(Order oldItem, Order newItem, String key, int position) {
-        Log.d("ShoppingCartAdapter", "Changed an item.");
+        Log.d("KitchenItemAdapter", "Changed an item.");
 
     }
 
     @Override
     protected void itemRemoved(Order item, String key, int position) {
-        Log.d("ShoppingCartAdapter", "Removed an item from the adapter.");
+        Log.d("KitchenItemAdapter", "Removed an item from the adapter.");
 
     }
 
     @Override
     protected void itemMoved(Order item, String key, int oldPosition, int newPosition) {
-        Log.d("ShoppingCartAdapter", "Moved an item.");
+        Log.d("KitchenItemAdapter", "Moved an item.");
 
     }
 

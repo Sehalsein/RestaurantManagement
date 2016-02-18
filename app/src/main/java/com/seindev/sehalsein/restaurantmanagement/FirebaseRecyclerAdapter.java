@@ -43,6 +43,8 @@ public abstract class FirebaseRecyclerAdapter<ViewHolder extends RecyclerView.Vi
      */
     public FirebaseRecyclerAdapter(Query query, Class<T> itemClass) {
         this(query, itemClass, null, null);
+
+
     }
 
     /**
