@@ -1,6 +1,5 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,11 +16,16 @@ import java.util.ArrayList;
 
 public class ReviewHome extends AppCompatActivity {
 
+    //CONSTANT VARIABLE
+    private Constant constant;
+    private String mDishId;
+
+
+    //FIREBASE RECYCLER VIEW
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
     private final static String SAVED_ADAPTER_KEYS = "SAVED_ADAPTER_KEYS";
-
     private Query mQuery;
-    private ReviewHomeAdapter mMyAdapter;
+    private ReviewHomeAdapter mAdapter;
     private ArrayList<Review> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
 
@@ -40,15 +44,14 @@ public class ReviewHome extends AppCompatActivity {
         });
 
 
-        Intent intent = getIntent();
-        String dishid = intent.getStringExtra("DishId");
-        if (dishid == null) {
-            dishid = "K001";
+        mDishId = constant.getDishid();
+        if (mDishId == null) {
+            mDishId = getResources().getString(R.string.DishId);
         }
 
         handleInstanceState(savedInstanceState);
-        setupFirebase(dishid);
-        setupRecyclerview();
+        initFirebase(mDishId);
+        initRecyclerView();
 
 
     }
@@ -66,19 +69,19 @@ public class ReviewHome extends AppCompatActivity {
         }
     }
 
-    private void setupFirebase(String DishId) {
-        Firebase.setAndroidContext(this);
-        String firebaseLocation = getResources().getString(R.string.FireBase_Review_URL) + "/" + DishId;
+    private void initFirebase(String mDishId) {
+        //Firebase.setAndroidContext(this);
+        String firebaseLocation = getResources().getString(R.string.FireBase_Review_URL) + "/" + mDishId;
         mQuery = new Firebase(firebaseLocation);
     }
 
-    private void setupRecyclerview() {
+    private void initRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.review_recycler);
-        mMyAdapter = new ReviewHomeAdapter(mQuery, Review.class, mAdapterItems, mAdapterKeys);
+        mAdapter = new ReviewHomeAdapter(mQuery, Review.class, mAdapterItems, mAdapterKeys);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
-        recyclerView.setAdapter(mMyAdapter);
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -107,14 +110,14 @@ public class ReviewHome extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // outState.putParcelable(SAVED_ADAPTER_ITEMS, Parcels.wrap(mMyAdapter.getItems()));
-        outState.putStringArrayList(SAVED_ADAPTER_KEYS, mMyAdapter.getKeys());
+        // outState.putParcelable(SAVED_ADAPTER_ITEMS, Parcels.wrap(mAdapter.getItems()));
+        outState.putStringArrayList(SAVED_ADAPTER_KEYS, mAdapter.getKeys());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMyAdapter.destroy();
+        mAdapter.destroy();
     }
 
 

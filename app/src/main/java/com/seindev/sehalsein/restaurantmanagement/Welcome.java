@@ -3,6 +3,7 @@ package com.seindev.sehalsein.restaurantmanagement;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,8 +18,16 @@ import java.text.DecimalFormat;
 
 public class Welcome extends AppCompatActivity {
 
-    private String mTAbleNo = "T002";
-    private String mBillNo = "B001";
+    //CONSTANT VARIABLE
+    private Constant constant;
+    private String mTableId;
+    private String mBillId;
+    private String mOrderId;
+    private String mService;
+    private String mDishId;
+
+    private float mTotalAmount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,55 +38,59 @@ public class Welcome extends AppCompatActivity {
         ImageView appIcon = (ImageView) findViewById(R.id.imageViewLogo);
         EditText tableno = (EditText) findViewById(R.id.editText);
 
+        //TODO REMOVE EDIT TEXT
+        tableno.setVisibility(View.INVISIBLE);
+
         Picasso.with(this)
                 .load(R.drawable.welcomebg)
                 .resize(500, 800)
                 .into(welcomebg);
 
-        setupBillId();
+        initOrderId();
 
     }
 
-    private void setupBillId() {
-        Firebase.setAndroidContext(this);
-        String FirebaselinkMenu = getResources().getString(R.string.FireBase_Bill_URL);
-        final Firebase mRef = new Firebase(FirebaselinkMenu);
+    //INTITALIZING ORDER ID FROM FIREBASE
+    private void initOrderId() {
+
+        String FirebaselinkBill = getResources().getString(R.string.FireBase_OrderDetail_URL);
+        final Firebase mRef = new Firebase(FirebaselinkBill);
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                String nOrderId = null;
                 boolean vExist = dataSnapshot.exists();
-                String billno = "B";
                 if (vExist) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Bill post = postSnapshot.getValue(Bill.class);
-                        billno = post.getBillNo();
+                        Order post = postSnapshot.getValue(Order.class);
+                        nOrderId = post.getOrderid();
                     }
-
-                    final int result = Integer.parseInt(BillNumberonly(billno));
-
-                    mBillNo = BillNumbercalc(result);
-                    System.out.println("TRUE " + mBillNo);
+                    final int result = Integer.parseInt(OrderNumberOnly(nOrderId));
+                    mOrderId = OrderNumberCalc(result);
+                    System.out.println("TRUE" + mOrderId);
                 } else {
-                    mBillNo = "B001";
-                    System.out.println("FALSE " + mBillNo);
+                    mOrderId = getResources().getString(R.string.OrderId);
+                    System.out.println("FALSE" + mOrderId);
                 }
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
+                Log.d("WELCOME", "onCancelled ERROR" + firebaseError.toString());
             }
         });
     }
 
-    public String BillNumbercalc(int num) {
+    //FORMATES ORDERNO TO ORDERID
+    public String OrderNumberCalc(int num) {
 
-        String billno = "B" + new DecimalFormat("000").format(++num);
+        String billno = "F" + new DecimalFormat("000").format(++num);
         return billno;
 
     }
 
-    public static String BillNumberonly(final String billno) {
+    //CALCULATES THE ORDERNO
+    public static String OrderNumberOnly(final String billno) {
         final StringBuilder sb = new StringBuilder(billno.length());
         for (int i = 0; i < billno.length(); i++) {
             final char c = billno.charAt(i);
@@ -88,24 +101,29 @@ public class Welcome extends AppCompatActivity {
         return sb.toString();
     }
 
+    //DINE-IN BUTTON CLICK
     public void dineIn(View view) {
-        //Toast.makeText(this, "DINEIN", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Welcome.this, MenuHome.class);
-        intent.putExtra("TableNo", mTAbleNo);
-        intent.putExtra("BillNo", mBillNo);
-        startActivity(intent);
+        mService = getResources().getString(R.string.DineIn);
+        constant.setOrderId(mOrderId);
+        constant.setService(mService);
+
+        startActivity(new Intent(Welcome.this, MenuHome.class));
+        finish();
     }
 
+    //ADMIN SECRECT ENTRY
     public void icon(View view) {
         startActivity(new Intent(Welcome.this, AdminHome.class));
     }
 
+    //HOME DELIVERY BUTTON CLICK
     public void homeDelivery(View view) {
-        //Toast.makeText(this,"HOMEDELIVERY",Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Welcome.this, MenuHome.class);
-        intent.putExtra("TableNo", mTAbleNo);
-        intent.putExtra("BillNo", mBillNo);
-        startActivity(intent);
+        mService = getResources().getString(R.string.HomeDelivery);
+        constant.setOrderId(mOrderId);
+        constant.setService(mService);
+
+        startActivity(new Intent(Welcome.this, MenuHome.class));
+        finish();
     }
 
 }

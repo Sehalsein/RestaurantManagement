@@ -18,23 +18,30 @@ import com.firebase.client.ValueEventListener;
 
 public class ItemDetail extends AppCompatActivity {
 
+
+    //CONSTANT VARIABLE
+    private Constant constant;
+    private String mTableId;
+    private String mOrderId;
+    private String mService;
+    private String mDishId;
+
+    //DESIGN VARIABLE
     private TextView vCustomerName, vDescription, vIndRatings, vReview, vQuantity, vSpicyLevel;
     private LinearLayout vLayoutReview, vLayoutNoReview;
     private RatingBar vRatings;
     private Toolbar toolbar;
 
-    private String mTableNo;
+    //Check Variables
+    private boolean vReviewExist;
+    private boolean vOrderExist;
 
-    boolean vReviewExist;
-    boolean vOrderExist;
-    String mDishName, mDishId;
 
-    int mQuantity = 0;
-    int mPrice;
-    int mSno = 0;
-    String dishid;
-    String mBillNo;
-    //String mTableNo = "T001";
+    //Variable
+    private int mSno = 0;
+    private int mQuantity = 0;
+    private String mDishName;
+    private int mPrice;
 
 
     @Override
@@ -52,129 +59,53 @@ public class ItemDetail extends AppCompatActivity {
             }
         });
 
+        //Initializing 
         vCustomerName = (TextView) findViewById(R.id.customername);
         vDescription = (TextView) findViewById(R.id.textDescription);
         vIndRatings = (TextView) findViewById(R.id.textIndRating);
         vRatings = (RatingBar) findViewById(R.id.ratingBar);
-
         vSpicyLevel = (TextView) findViewById(R.id.textSpicyLevel);
         vReview = (TextView) findViewById(R.id.textReview);
         vQuantity = (TextView) findViewById(R.id.test);
         vLayoutNoReview = (LinearLayout) findViewById(R.id.layoutNoReview);
         vLayoutReview = (LinearLayout) findViewById(R.id.layoutReview);
 
-        Intent intent = getIntent();
-        dishid = intent.getStringExtra("DishId");
-        mTableNo = intent.getStringExtra("TableNo");
-        mBillNo = intent.getStringExtra("BillNo");
-
-        if (dishid == null) {
-            dishid = "K001";
+        mDishId = constant.getDishid();
+        if (mDishId == null) {
+            mDishId = getResources().getString(R.string.DishId);
         }
 
-        // Toast.makeText(this, "Table NO : " + mTableNo, Toast.LENGTH_LONG).show();
-        setupFirebase(dishid);
+        mTableId = constant.getTableId();
+        if (mTableId == null) {
+            mTableId = getResources().getString(R.string.TableId);
+        }
+
+        mOrderId = constant.getOrderId();
+        if (mOrderId == null) {
+            mOrderId = getResources().getString(R.string.OrderId);
+        }
+
+        initMenuDetail(mDishId);
+        initReviewDetail(mDishId);
+        initOrderDetail(mDishId, mTableId);
+
 
     }
 
+    //Displays Order Ind
+    private void initOrderDetail(String mDishId, String mTableId) {
 
-    public void morereview(View view) {
-        if (vReviewExist) {
-            Intent intent = new Intent(ItemDetail.this, ReviewHome.class);
-            intent.putExtra("DishId", dishid);
-            startActivity(intent);
+        String mOrderLink = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableId;
+        final Firebase oRef = new Firebase(mOrderLink);
 
-        }
-
-    }
-
-    private void setupFirebase(String dishId) {
-
-        Firebase.setAndroidContext(this);
-        String FirebaselinkMenu = getResources().getString(R.string.FireBase_Menu_URL);
-        String FirabaseLinkCustoemr = getResources().getString(R.string.FireBase_Customer_URL);
-        String FirebaselinkReview = getResources().getString(R.string.FireBase_Review_URL) + "/" + dishId;
-        String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableNo;
-
-        final Firebase mRef = new Firebase(FirebaselinkMenu);
-        final Firebase rRef = new Firebase(FirebaselinkReview);
-        final Firebase oRef = new Firebase(FirebaselinkOrder);
-
-        //final Firebase cRef = new Firebase(FirabaseLinkCustoemr);
-
-        //MENU TABLE
-        Query mQuery = mRef.orderByChild("dishId").equalTo(dishId);
-        mQuery.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Menu post = postSnapshot.getValue(Menu.class);
-                    mDishName = post.getDishName();
-                    mDishId = post.getDishId();
-                    mPrice = Integer.parseInt(post.getPrice());
-                    vDescription.setText(post.getTags());
-                    toolbar.setTitle(post.getDishName());
-
-                    //Toast.makeText(ItemDetail.this, "DISH NAME : " + post.getDishName(), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-
-            }
-        });
-
-        //REVIEW TABLE
-        //Query rQuery = rRef.orderByChild("dishid").equalTo(dishId);
-        rRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                vReviewExist = dataSnapshot.exists();
-                if (vReviewExist) {
-                    vLayoutNoReview.setVisibility(View.INVISIBLE);
-                    int i = 0;
-                    float avg = 0f;
-                    String customerid = "";
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Review post = postSnapshot.getValue(Review.class);
-                        float mRating = post.getRatings();
-                        vIndRatings.setBackgroundResource(backgroundcolor(mRating));
-                        customerid = post.getCustomerid();
-                        vIndRatings.setText(mRating + "");
-                        vReview.setText(post.getReview());
-                        avg = avg + post.getRatings();
-                        //vSpicyLevel.setText(post.getRatings());
-                        i++;
-                        vRatings.setRating(ratingscaluclate(avg, i));
-
-                        //Toast.makeText(ItemDetail.this, "Exists : " + exist, Toast.LENGTH_SHORT).show();
-                        //System.out.println(post.getRatings() + " - " + post.getSNo());
-                    }
-                    CustomerName(customerid);
-                } else {
-                    //Toast.makeText(ItemDetail.this, "Exists : " + exist, Toast.LENGTH_SHORT).show();
-                    vLayoutReview.setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-
-        //ORDER TABLE
+        //Checks the Serial Number of the previous Order
         oRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
+                System.out.println("There are " + snapshot.getChildrenCount() + " Order");
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Order post = postSnapshot.getValue(Order.class);
                     mSno = post.getSno();
-                    // Toast.makeText(ItemDetail.this, "Exists : " + mSno, Toast.LENGTH_SHORT).show();
-
                 }
             }
 
@@ -184,8 +115,9 @@ public class ItemDetail extends AppCompatActivity {
             }
         });
 
-        //ORDER TABLE
-        Query oQuery = oRef.orderByChild("dishId").equalTo(dishId);
+        //Checks weather the Order exist
+        System.out.println("ORDER TEST : " + mDishId);
+        Query oQuery = oRef.orderByChild("dishid").equalTo(mDishId);
         oQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -193,11 +125,13 @@ public class ItemDetail extends AppCompatActivity {
                 if (vOrderExist) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         Order post = postSnapshot.getValue(Order.class);
-                        vQuantity.setText(post.getQuantity() + "");
-                        mQuantity = post.getQuantity();
+                        vQuantity.setText(post.getQuanity() + "");
+                        mQuantity = post.getQuanity();
                         mSno = post.getSno();
+                        System.out.println("ORDER TEST : TRUE");
                     }
                 } else {
+                    System.out.println("ORDER TEST : FALSE");
                     mQuantity = 0;
                     ++mSno;
                 }
@@ -209,14 +143,84 @@ public class ItemDetail extends AppCompatActivity {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+    }
 
+    //Displaying Single Review and Ratings
+    private void initReviewDetail(String mDishId) {
+
+        String mReviewLink = getResources().getString(R.string.FireBase_Review_URL) + "/" + mDishId;
+        final Firebase rRef = new Firebase(mReviewLink);
+
+        rRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                vReviewExist = dataSnapshot.exists();
+                if (vReviewExist) {
+                    vLayoutNoReview.setVisibility(View.INVISIBLE);
+                    int count = (int) dataSnapshot.getChildrenCount();
+                    float ratings = 0f;
+                    String customerid = "";
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Review post = postSnapshot.getValue(Review.class);
+                        float mRating = post.getRatings();
+                        vIndRatings.setBackgroundResource(backgroundcolor(mRating));
+                        customerid = post.getCustomerid();
+                        vIndRatings.setText(mRating + "");
+                        vReview.setText(post.getReview());
+                        ratings = ratings + post.getRatings();
+                        vRatings.setRating(ratingscaluclate(ratings, count));
+                    }
+                    CustomerName(customerid);
+                } else {
+                    vLayoutReview.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    //Displaying Dish Detail
+    private void initMenuDetail(final String mDishId) {
+        String mMenuLink = getResources().getString(R.string.FireBase_Menu_URL);
+        final Firebase mRef = new Firebase(mMenuLink);
+
+        Query mQuery = mRef.orderByChild("dishId").equalTo(mDishId);
+        mQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Menu post = postSnapshot.getValue(Menu.class);
+                    mPrice = Integer.parseInt(post.getPrice());
+                    mDishName = post.getDishName();
+                    vDescription.setText(post.getTags());
+                    toolbar.setTitle(post.getDishName());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+
+            }
+        });
 
     }
 
+    //MORE REVIEW FIX
+    public void morereview(View view) {
+        if (vReviewExist) {
+            startActivity(new Intent(ItemDetail.this, ReviewHome.class));
+        }
+
+    }
+
+    //Displays Customer Name for Review
     private void CustomerName(String CustomerId) {
-        //CUSTOMER TABLE
-        //Toast.makeText(ItemDetail.this, "CustomerId : " + CustomerId, Toast.LENGTH_SHORT).show();
-        Firebase.setAndroidContext(this);
+
         String FirabaselinkCustomer = getResources().getString(R.string.FireBase_Customer_URL);
         final Firebase cRef = new Firebase(FirabaselinkCustomer);
         Query cQuery = cRef.orderByChild("customerId").equalTo(CustomerId);
@@ -237,6 +241,7 @@ public class ItemDetail extends AppCompatActivity {
         });
     }
 
+    //Background Color For RATINGS
     private int backgroundcolor(float ratings) {
 
         int bgcolor = R.color.color50;
@@ -283,6 +288,7 @@ public class ItemDetail extends AppCompatActivity {
         return bgcolor;
     }
 
+    //Ratings Calculation
     private float ratingscaluclate(float avgrating, int i) {
         return avgrating / i;
     }
@@ -291,12 +297,10 @@ public class ItemDetail extends AppCompatActivity {
 
         mQuantity++;
 
-        Firebase.setAndroidContext(this);
-
         String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL);
         Firebase mref = new Firebase(FirebaselinkOrder);
-        Firebase Ref = mref.child(mTableNo).child("" + mSno);
-        Order order = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
+        Firebase Ref = mref.child(mTableId).child("" + mSno);
+        Order order = new Order(mSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId);
         Ref.setValue(order, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -312,8 +316,8 @@ public class ItemDetail extends AppCompatActivity {
 
         String FirebaselinkOrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL);
         Firebase mRef = new Firebase(FirebaselinkOrderDetail);
-        Firebase ref = mRef.child(mBillNo).child("" + mSno);
-        Order orderdetail = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
+        Firebase ref = mRef.child("" + mSno);
+        Order orderdetail = new Order(mSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId);
         ref.setValue(orderdetail, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -334,12 +338,12 @@ public class ItemDetail extends AppCompatActivity {
 
         if (mQuantity > 0) {
             --mQuantity;
-            Firebase.setAndroidContext(this);
+
             String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL);
 
             Firebase mref = new Firebase(FirebaselinkOrder);
-            Firebase Ref = mref.child(mTableNo).child("" + mSno);
-            Order menu = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
+            Firebase Ref = mref.child(mTableId).child("" + mSno);
+            Order menu = new Order(mSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId);
             Ref.setValue(menu, new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -355,8 +359,8 @@ public class ItemDetail extends AppCompatActivity {
 
             String FirebaselinkOrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL);
             Firebase mRef = new Firebase(FirebaselinkOrderDetail);
-            Firebase ref = mRef.child(mBillNo).child("" + mSno);
-            Order orderdetail = new Order(mSno, mBillNo, mDishId, mDishName, mQuantity, mPrice, mTableNo);
+            Firebase ref = mRef.child("" + mSno);
+            Order orderdetail = new Order(mSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId);
             ref.setValue(orderdetail, new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -370,9 +374,10 @@ public class ItemDetail extends AppCompatActivity {
                 }
             });
 
+            //Deleting the entry when quantity = 0 
             if (mQuantity == 0) {
-                String OrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL) + "/" + mBillNo + "/" + mSno;
-                String Order = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableNo + "/" + mSno;
+                String OrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL) + "/" + mSno;
+                String Order = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableId + "/" + mSno;
                 Firebase mDelete = new Firebase(OrderDetail);
                 Firebase mOrderDelete = new Firebase(Order);
                 mOrderDelete.removeValue();
@@ -394,14 +399,8 @@ public class ItemDetail extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-
-                Intent intent = new Intent(ItemDetail.this, ShoppingCartHome.class);
-                intent.putExtra("TableNo", mTableNo);
-                intent.putExtra("BillNo", mBillNo);
-                startActivity(intent);
-
+                startActivity(new Intent(ItemDetail.this, ShoppingCartHome.class));
                 return true;
-
 
             default:
                 // If we got here, the user's action was not recognized.

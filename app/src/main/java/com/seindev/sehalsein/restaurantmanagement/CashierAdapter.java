@@ -1,7 +1,6 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,50 +18,59 @@ import com.firebase.client.Query;
 import java.util.ArrayList;
 
 /**
- * Created by sehalsein on 14/02/16.
+ * Created by sehalsein on 20/02/16.
  */
-public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewHolder, KitchenOpen> {
+public class CashierAdapter extends FirebaseRecyclerAdapter<CashierAdapter.ViewHolder, KitchenOpen> {
 
-
-    //VARIABLE
+    //Variable
     private TextView vTotalAmount;
-    //private String mBillId, mbillid;
     private String mTableNo = "T001";
-    private int mTotalAmount;
+    private float mTotalAmount;
+    private float nTotalAmount;
     private int mSno;
-    private Context context;
 
     //CONSTANT VARIABLE
+    private Constant constant;
+    private String mTableId;
+    private String mBillId;
     private String mOrderId;
+    private String mService;
+    private String mDishId;
 
 
-    //RECYCLER VIEW
-    private KitchenItemAdapter mMyAdapter;
+    //Recycler View
+    private CashierItemAdapter mMyAdapter;
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
     private final static String SAVED_ADAPTER_KEYS = "SAVED_ADAPTER_KEYS";
     private Query mQuery;
+    private Context context;
     private ArrayList<Order> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
 
-    //CLICK LISTENER
-    private KitchenClickListener kitchenClickListener;
+    private CashierClickListner cashierClickListner;
 
-    public void setKitchenClickListner(KitchenClickListener kitchenClickListener) {
-        this.kitchenClickListener = kitchenClickListener;
+    public void setCashierClickListner(CashierClickListner cashierClickListner) {
+        this.cashierClickListner = cashierClickListner;
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView vTextBillNo;
+        private TextView vTextBillNo, vTextTotalAmount;
         private RecyclerView recyclerView;
-        private LinearLayout vKitchenCard;
+        private LinearLayout vCashierCard;
 
         public ViewHolder(View view) {
             super(view);
             vTextBillNo = (TextView) view.findViewById(R.id.textBillNo);
-            recyclerView = (RecyclerView) view.findViewById(R.id.kitchen_list_recycler);
-            vKitchenCard = (LinearLayout) view.findViewById(R.id.kitchen_card);
+            recyclerView = (RecyclerView) view.findViewById(R.id.cashier_list_recycler);
+            vCashierCard = (LinearLayout) view.findViewById(R.id.cashier_card);
+            vTextTotalAmount = (TextView) view.findViewById(R.id.textTotalAmount);
+            vTotalAmount = (TextView) view.findViewById(R.id.textTotalAmount);
+
+
         }
+
     }
 
     public void removeItem(int position) {
@@ -71,33 +79,34 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
         // notifyItemRangeChanged(position, countries.size());
     }
 
-    public KitchenAdapter(Query query, Class<KitchenOpen> itemClass, @Nullable ArrayList<KitchenOpen> items,
+    public CashierAdapter(Query query, Class<KitchenOpen> itemClass, @Nullable ArrayList<KitchenOpen> items,
                           @Nullable ArrayList<String> keys, Context context) {
         super(query, itemClass, items, keys);
         this.context = context;
     }
 
     @Override
-    public KitchenAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CashierAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.kitchen_list, parent, false);
+                .inflate(R.layout.cashier_list, parent, false);
 
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final KitchenAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final CashierAdapter.ViewHolder holder, final int position) {
         final KitchenOpen item = getItem(position);
         holder.vTextBillNo.setText(item.getOrderid());
-
         mOrderId = item.getOrderid();
 
-        //TODO FIX SOME DELAY BUG
-        holder.vKitchenCard.setOnTouchListener(new View.OnTouchListener() {
+        holder.vTextTotalAmount.setText(item.getTotalamount() + "");
+
+        //TODO FIX SOME LATE BUG HERE
+        holder.vCashierCard.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (kitchenClickListener != null) {
-                    kitchenClickListener.itemClicked(v, mOrderId, item.getSno(), item.getTableid(), item.getTotalamount());
+                if (cashierClickListner != null) {
+                    cashierClickListner.itemClicked(v, mOrderId, item.getSno(), item.getTableid(), item.getTotalamount());
                     return true;
                 } else {
                     return false;
@@ -105,13 +114,10 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
             }
         });
 
-        //handleInstanceState(savedInstanceState);
-
-        //Initializing Firebase
         initFirebase(mOrderId);
 
-        //Initializing Inner recycler View
-        mMyAdapter = new KitchenItemAdapter(mQuery, Order.class, mAdapterItems, mAdapterKeys);
+        //RECYCLER VIEW
+        mMyAdapter = new CashierItemAdapter(mQuery, Order.class, mAdapterItems, mAdapterKeys);
         LinearLayoutManager linearLayout = new LinearLayoutManager(context);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         holder.recyclerView.setLayoutManager(linearLayout);
@@ -120,18 +126,6 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
 
     }
 
-    // Restoring the item list and the keys of the items: they will be passed to the adapter
-    private void handleInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null &&
-                savedInstanceState.containsKey(SAVED_ADAPTER_ITEMS) &&
-                savedInstanceState.containsKey(SAVED_ADAPTER_KEYS)) {
-            //  mAdapterItems = Parcels.unwrap(savedInstanceState.getParcelable(SAVED_ADAPTER_ITEMS));
-            mAdapterKeys = savedInstanceState.getStringArrayList(SAVED_ADAPTER_KEYS);
-        } else {
-            mAdapterItems = new ArrayList<Order>();
-            mAdapterKeys = new ArrayList<String>();
-        }
-    }
 
     private void initFirebase(String mOrderId) {
 
@@ -143,21 +137,21 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
 
     @Override
     protected void itemAdded(KitchenOpen item, String key, int position) {
-        Log.d("KitchenAdapter", "Added a new item to the adapter.");
+        Log.d("CashierAdapter", "Added a new item to the adapter.");
     }
 
     @Override
     protected void itemChanged(KitchenOpen oldItem, KitchenOpen newItem, String key, int position) {
-        Log.d("KitchenAdapter", "Changed an item.");
+        Log.d("CashierAdapter", "Changed an item.");
     }
 
     @Override
     protected void itemRemoved(KitchenOpen item, String key, int position) {
-        Log.d("KitchenAdapter", "Removed an item from the adapter.");
+        Log.d("CashierAdapter", "Removed an item from the adapter.");
     }
 
     @Override
     protected void itemMoved(KitchenOpen item, String key, int oldPosition, int newPosition) {
-        Log.d("KitchenAdapter", "Moved an item.");
+        Log.d("CashierAdapter", "Moved an item.");
     }
 }

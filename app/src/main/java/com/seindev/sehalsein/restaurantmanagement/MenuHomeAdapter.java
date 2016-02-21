@@ -6,8 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.client.Query;
@@ -25,34 +25,26 @@ public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.Vie
         this.menuClickListener = menuClickListener;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView vDishIcon;
         TextView vDishName, vCategory, vItemQuantity, vIngredients;
-        Button vtest;
+        LinearLayout vMenuCard;
 
         public ViewHolder(View view) {
             super(view);
-            view.setOnClickListener(this);
-            vtest = (Button) view.findViewById(R.id.bttest);
+            vMenuCard = (LinearLayout) view.findViewById(R.id.menu_card);
             vDishName = (TextView) view.findViewById(R.id.textDishName);
             vIngredients = (TextView) view.findViewById(R.id.textIngredients);
             vDishIcon = (ImageView) view.findViewById(R.id.imageDishIcon);
 
         }
 
-        @Override
-        public void onClick(View v) {
-            if (menuClickListener != null) {
-               // menuClickListener.itemClicked(v, 5);
-            }
-        }
-    }
 
+    }
 
     public MenuHomeAdapter(Query query, Class<Menu> itemClass, @Nullable ArrayList<Menu> items,
                            @Nullable ArrayList<String> keys) {
-
         super(query, itemClass, items, keys);
     }
 
@@ -60,7 +52,6 @@ public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.Vie
     public MenuHomeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.menu_list, parent, false);
-
         return new ViewHolder(view);
     }
 
@@ -70,7 +61,7 @@ public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.Vie
         holder.vIngredients.setText(item.getCategory());
         holder.vDishName.setText(item.getDishName());
 
-        holder.vtest.setOnClickListener(new View.OnClickListener() {
+        holder.vMenuCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (menuClickListener != null) {

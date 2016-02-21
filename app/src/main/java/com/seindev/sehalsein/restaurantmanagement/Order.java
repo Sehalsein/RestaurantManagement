@@ -5,57 +5,53 @@ package com.seindev.sehalsein.restaurantmanagement;
  */
 public class Order {
     private int sno;
-    private String billNo;
-    private String dishId;
-    private String dishName;
-    private int quantity;
+    private String orderid;
+    private String dishid;
+    private String dishname;
+    private int quanity;
     private int price;
-    private String tableNo;
+    private String tableid;
+
 
     public Order() {
     }
 
-    public Order(String tableNo, String billNo, int sno) {
-        this.tableNo = tableNo;
-        this.billNo = billNo;
+    public Order(int sno, String orderid, String dishid, String dishname, int quanity, int price, String tableid) {
         this.sno = sno;
+        this.orderid = orderid;
+        this.dishid = dishid;
+        this.dishname = dishname;
+        this.quanity = quanity;
+        this.price = price;
+        this.tableid = tableid;
     }
 
-    public Order(int sno, String billNo, String dishId, String dishName, int quantity, int price, String tableNo) {
-        this.sno = sno;
-        this.billNo = billNo;
-        this.dishId = dishId;
-        this.dishName = dishName;
-        this.quantity = quantity;
-        this.price = price;
-        this.tableNo = tableNo;
-    }
 
     public int getSno() {
         return sno;
     }
 
-    public String getBillNo() {
-        return billNo;
+    public String getOrderid() {
+        return orderid;
     }
 
-    public String getDishId() {
-        return dishId;
+    public String getDishid() {
+        return dishid;
     }
 
-    public String getDishName() {
-        return dishName;
+    public String getDishname() {
+        return dishname;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getQuanity() {
+        return quanity;
     }
 
     public int getPrice() {
         return price;
     }
 
-    public String getTableNo() {
-        return tableNo;
+    public String getTableid() {
+        return tableid;
     }
 }

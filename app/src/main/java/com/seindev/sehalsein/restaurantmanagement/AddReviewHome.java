@@ -60,7 +60,7 @@ public class AddReviewHome extends AppCompatActivity {
                 mRatings = 0;
             }
 
-            Firebase.setAndroidContext(this);
+            //Firebase.setAndroidContext(this);
             String mFirebaseUrl = getResources().getString(R.string.FireBase_Review_URL);
             Firebase firebase = new Firebase(mFirebaseUrl);
             Firebase mRef = firebase.child(mDishId).child(mSno + "");

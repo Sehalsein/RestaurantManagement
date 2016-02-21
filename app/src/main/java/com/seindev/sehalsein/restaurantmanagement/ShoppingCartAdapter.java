@@ -18,10 +18,10 @@ import java.util.ArrayList;
 public class ShoppingCartAdapter extends FirebaseRecyclerAdapter<ShoppingCartAdapter.ViewHolder, Order> {
 
     private int vTotalAmount;
-    private ShoppingCart shoppingCart;
+    private ShoppingClickListener shoppingClickListener;
 
-    public void send(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
+    public void send(ShoppingClickListener shoppingClickListener) {
+        this.shoppingClickListener = shoppingClickListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -57,17 +57,17 @@ public class ShoppingCartAdapter extends FirebaseRecyclerAdapter<ShoppingCartAda
 
         int totalprice, price, quantity;
         price = item.getPrice();
-        quantity = item.getQuantity();
+        quantity = item.getQuanity();
         totalprice = price * quantity;
 
         vTotalAmount += totalprice;
 
         holder.vPrice.setText(totalprice + "");
-        holder.vDishName.setText(item.getDishName());
-        holder.vQuantity.setText(item.getQuantity() + "");
+        holder.vDishName.setText(item.getDishname());
+        holder.vQuantity.setText(item.getQuanity() + "");
 
-        if (shoppingCart != null) {
-            shoppingCart.send(vTotalAmount, item.getBillNo(), item.getTableNo());
+        if (shoppingClickListener != null) {
+            shoppingClickListener.send(vTotalAmount);
         }
 
 

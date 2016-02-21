@@ -18,15 +18,25 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
-//SWIPE
+public class CashierHome extends AppCompatActivity implements CashierClickListner {
 
-public class KitchenHome extends AppCompatActivity implements KitchenClickListener {
+
+    //VARIABLE
+    private float mTotalAmount;
+    private int mSno;
+    private int nSno;
+    private String mDate;
 
     //CONSTANT VARIABLE
     private Constant constant;
@@ -36,19 +46,14 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
     private String mService;
     private String mDishId;
 
-
-    //RECYCLER VIEW
+    //RECYCLER VIEW 
     private RecyclerView recyclerView;
-    private KitchenAdapter mAdapter;
+    private CashierAdapter mMyAdapter;
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
     private final static String SAVED_ADAPTER_KEYS = "SAVED_ADAPTER_KEYS";
     private Query mQuery;
     private ArrayList<KitchenOpen> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
-
-    //VARIABLE
-    private int mSno;
-    private float mTotalAmount;
 
     //SWIPE
     private ArrayList<String> countries = new ArrayList<>();
@@ -63,7 +68,7 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kitchen_home);
+        setContentView(R.layout.activity_cashier_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -79,12 +84,7 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
         initFirebase();
         initRecyclerView();
 
-
     }
-
-    private void initDialog() {
-    }
-
 
     // Restoring the item list and the keys of the items: they will be passed to the adapter
     private void handleInstanceState(Bundle savedInstanceState) {
@@ -100,27 +100,25 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
     }
 
     private void initFirebase() {
-        String firebaseLocation = getResources().getString(R.string.FireBase_Kitchen_Open_URL);
+        String firebaseLocation = getResources().getString(R.string.FireBase_Cashier_Open_URL);
         mQuery = new Firebase(firebaseLocation);
     }
 
     private void initRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.kitchen_recycler);
-        mAdapter = new KitchenAdapter(mQuery, KitchenOpen.class, mAdapterItems, mAdapterKeys, this);
-        mAdapter.setKitchenClickListner(this);
+
+        recyclerView = (RecyclerView) findViewById(R.id.cashier_recycler);
+        mMyAdapter = new CashierAdapter(mQuery, KitchenOpen.class, mAdapterItems, mAdapterKeys, this);
+        mMyAdapter.setCashierClickListner(this);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-
-        //SWIPE initializing
+        recyclerView.setAdapter(mMyAdapter);
+        mMyAdapter.notifyDataSetChanged();
         initSwipe();
     }
 
 
-    //TODO FIX ENTIRE CARD SWIPE
     //SWIPE
     private void initSwipe() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -135,36 +133,35 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
                 int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT) {
-                    mAdapter.removeItem(position);
+                    mMyAdapter.removeItem(position);
+
+                    Toast.makeText(CashierHome.this, "DELETE", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CashierHome.this, "BILL IDASIDSA : " + mBillId, Toast.LENGTH_LONG).show();
 
                     //KITCHEN SWIPE DELETE (DELETE)
-                    String KitchenOpen = getResources().getString(R.string.FireBase_Kitchen_Open_URL) + "/" + mSno;
+                    String KitchenOpen = getResources().getString(R.string.FireBase_Cashier_Open_URL) + "/" + nSno;
                     Firebase mDelete = new Firebase(KitchenOpen);
                     mDelete.removeValue();
+
                 } else {
-                    //KITCHEN SWIPE DELETE (COMPLETE)
-                    mAdapter.removeItem(position);
-                    String KitchenOpen = getResources().getString(R.string.FireBase_Kitchen_Open_URL) + "/" + mSno;
+                    //KITCHEN SWIPE (COMPLETE)
+                    mMyAdapter.removeItem(position);
+                    String KitchenOpen = getResources().getString(R.string.FireBase_Cashier_Open_URL) + "/" + nSno;
                     Firebase mDelete = new Firebase(KitchenOpen);
                     mDelete.removeValue();
 
-                    String FireBaseLink = getResources().getString(R.string.FireBase_Cashier_Open_URL);
-                    Firebase mRef = new Firebase(FireBaseLink);
-                    Firebase aRef = mRef.child(mSno + "");
-                    KitchenOpen kitchenOpen = new KitchenOpen(mSno, mOrderId, mTableId, mTotalAmount);
-                    aRef.setValue(kitchenOpen, new Firebase.CompletionListener() {
-                        @Override
-                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                            if (firebaseError != null) {
-                                System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                                Toast.makeText(KitchenHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
-                            } else {
-                                System.out.println("Data saved successfully.");
-                                Toast.makeText(KitchenHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
+                    String TableClear = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableId;
+                    Firebase vDelete = new Firebase(TableClear);
+                    vDelete.removeValue();
 
+                    initBillDetail();
+
+                    /*
+                    removeView();
+                    edit_position = position;
+                    alertDialog.setTitle("Edit Country");
+                    et_country.setText(countries.get(position));
+                    alertDialog.show();*/
                 }
             }
 
@@ -201,7 +198,77 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    //TODO TRY THIS
+    private void initBillDetail() {
+        String mBillLink = getResources().getString(R.string.FireBase_Bill_URL);
+        final Firebase oRef = new Firebase(mBillLink);
+        //Checks the Serial Number of the previous KitchenOpen
+        oRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println("There are " + snapshot.getChildrenCount() + " KitchenOpen");
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Bill post = postSnapshot.getValue(Bill.class);
+                    mSno = post.getSno();
+                    mBillId = post.getBillid();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+        if (mBillId == null) {
+            mBillId = getResources().getString(R.string.BillId);
+            mSno = 1;
+        } else {
+            final int result = Integer.parseInt(OrderNumberOnly(mBillId));
+            mBillId = OrderNumberCalc(result);
+            ++mSno;
+        }
+
+
+        Calendar cal = Calendar.getInstance();
+        mDate = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+        String FireBaseLink = getResources().getString(R.string.FireBase_Bill_URL);
+        Firebase mRef = new Firebase(FireBaseLink);
+        Firebase aRef = mRef.child(mSno + "");
+        Bill bill = new Bill(mSno, mBillId, mOrderId, mTotalAmount, mTableId, mDate);
+        aRef.setValue(bill, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                    Toast.makeText(CashierHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                } else {
+                    System.out.println("Data saved successfully.");
+                    Toast.makeText(CashierHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    //FORMATES ORDERNO TO ORDERID
+    public String OrderNumberCalc(int num) {
+
+        String billno = "B" + new DecimalFormat("000").format(++num);
+        return billno;
+
+    }
+
+    //CALCULATES THE ORDERNO
+    public static String OrderNumberOnly(final String billno) {
+        final StringBuilder sb = new StringBuilder(billno.length());
+        for (int i = 0; i < billno.length(); i++) {
+            final char c = billno.charAt(i);
+            if (c > 47 && c < 58) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     private void removeView() {
         if (view.getParent() != null) {
             ((ViewGroup) view.getParent()).removeView(view);
@@ -209,11 +276,11 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
     }
 
     @Override
-    public void itemClicked(View view, String BillId, int Sno, String TableId, float TotalAmount) {
-        mOrderId = BillId;
-        mSno = Sno;
+    public void itemClicked(View view, String OrderId, int Sno, String TableId, float TotalAmount) {
+        mOrderId = OrderId;
+        nSno = Sno;
         mTableId = TableId;
         mTotalAmount = TotalAmount;
-        //Toast.makeText(KitchenHome.this, "BILL ID" + mBillId, Toast.LENGTH_LONG).show();
     }
+
 }

@@ -67,7 +67,7 @@ public class AddCustomerHome extends AppCompatActivity {
 
 
             //FIREBASE ENTRY
-            Firebase.setAndroidContext(this);
+            //Firebase.setAndroidContext(this);
             Firebase mref = new Firebase("https://restaurant-managment.firebaseio.com");
             //CHILD
             Firebase Ref = mref.child("Customer").child(mSno + "");

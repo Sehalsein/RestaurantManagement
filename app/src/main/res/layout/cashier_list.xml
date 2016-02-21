@@ -16,7 +16,7 @@
         card_view:cardElevation="@dimen/card_idle">
 
         <LinearLayout
-            android:id="@+id/kitchen_card"
+            android:id="@+id/cashier_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -39,23 +39,31 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:text="BillNo" />
-                
+
 
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:paddingBottom="2dp"
                 android:paddingRight="1dp"
                 android:paddingTop="2dp">
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/kitchen_list_recycler"
+                    android:id="@+id/cashier_list_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingTop="2dp" />
+
+                <TextView
+                    android:id="@+id/textTotalAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="TOTAl Amount" />
 
             </LinearLayout>
 

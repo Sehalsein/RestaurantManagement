@@ -6,19 +6,22 @@ package com.seindev.sehalsein.restaurantmanagement;
 public class Bill {
 
     private int sno;
-    private String billNo;
-    private int price;
-    private String tableNo;
+    private String billid;
+    private String orderid;
+    private float price;
+    private String tableid;
     private String date;
 
     public Bill() {
     }
 
-    public Bill(int sno, String billNo, int price, String tableNo, String date) {
+    public Bill(int sno, String billid, String orderid, float price, String tableid, String date) {
+
         this.sno = sno;
-        this.billNo = billNo;
+        this.billid = billid;
+        this.orderid = orderid;
         this.price = price;
-        this.tableNo = tableNo;
+        this.tableid = tableid;
         this.date = date;
     }
 
@@ -26,19 +29,25 @@ public class Bill {
         return sno;
     }
 
-    public String getBillNo() {
-        return billNo;
+    public String getBillid() {
+        return billid;
     }
 
-    public int getPrice() {
+    public String getOrderid() {
+        return orderid;
+    }
+
+    public float getPrice() {
         return price;
     }
 
-    public String getTableNo() {
-        return tableNo;
+    public String getTableid() {
+        return tableid;
     }
 
     public String getDate() {
         return date;
     }
+
+
 }

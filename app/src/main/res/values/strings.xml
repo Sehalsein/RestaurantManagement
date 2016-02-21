@@ -75,7 +75,18 @@
     <string name="FireBase_Order_URL">https://restaurant-managment.firebaseio.com/Order</string>
     <string name="FireBase_OrderDetail_URL">https://restaurant-managment.firebaseio.com/OrderDetail</string>
     <string name="FireBase_Bill_URL">https://restaurant-managment.firebaseio.com/Bill</string>
-    <string name="FireBase_Open_URL">https://restaurant-managment.firebaseio.com/Open</string>
+    <string name="FireBase_Kitchen_Open_URL">https://restaurant-managment.firebaseio.com/KitchenOpen</string>
+    <string name="FireBase_Cashier_Open_URL">https://restaurant-managment.firebaseio.com/CashierOpen</string>
+
+
+    <!-- Strings related to CONSTANT -->
+    <string name="TableId">T001</string>
+    <string name="BillId">B001</string>
+    <string name="OrderId">F001</string>
+    <string name="HomeOrderId">H001</string>
+    <string name="DishId">K001</string>
+    <string name="DineIn">DineIn</string>
+    <string name="HomeDelivery">HomeDelivery</string>
 
 
     <string name="title_activity_item__detail">Item_Detail</string>
@@ -85,6 +96,7 @@
     <string name="title_activity_add_review">AddReview</string>
     <string name="title_activity_add_customer_home">AddCustomerHome</string>
     <string name="title_activity_kitchen_home">KitchenHome</string>
+    <string name="title_activity_cashier">Cashier</string>
 
 
 </resources>

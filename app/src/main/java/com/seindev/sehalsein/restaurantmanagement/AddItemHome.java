@@ -30,7 +30,7 @@ public class AddItemHome extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
 
         //FireBase
-        Firebase.setAndroidContext(this);
+        //Firebase.setAndroidContext(this);
 
         //TOOLBAR
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

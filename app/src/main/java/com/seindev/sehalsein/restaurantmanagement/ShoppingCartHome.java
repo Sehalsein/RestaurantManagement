@@ -1,6 +1,5 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,29 +15,33 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-public class ShoppingCartHome extends AppCompatActivity implements ShoppingCart {
+public class ShoppingCartHome extends AppCompatActivity implements ShoppingClickListener {
 
+    //CONSTANT VARIABLE
+    private Constant constant;
+    private String mTableId;
+    private String mBillId;
+    private String mOrderId;
+    private String mService;
+    private String nOrderId;
 
-    private RecyclerView recyclerView;
-    private ShoppingCartAdapter mMyAdapter;
+    //XML Variable
     private TextView vTotalAmount;
 
-    private String mBillId, mbillid;
-    private String mTableNo;
+    //Variable
     private int mTotalAmount;
-    private int mBillSno = 1;
+    private int mSno;
 
+    //Recycler View
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
     private final static String SAVED_ADAPTER_KEYS = "SAVED_ADAPTER_KEYS";
-
     private Query mQuery;
+    private RecyclerView recyclerView;
+    private ShoppingCartAdapter mAdapter;
     private ArrayList<Order> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +59,48 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingCart 
 
         handleInstanceState(savedInstanceState);
 
-        Intent intent = getIntent();
-        mTableNo = intent.getStringExtra("TableNo");
-        mbillid = intent.getStringExtra("BillNo");
-
-        Toast.makeText(this, "Table NO : " + mTableNo, Toast.LENGTH_LONG).show();
-
-        setupFirebase();
-        setUpRecycler();
-
         vTotalAmount = (TextView) findViewById(R.id.textTotalAmount);
+
+        mTableId = constant.getTableId();
+        if (mTableId == null) {
+            mTableId = getResources().getString(R.string.TableId);
+        }
+
+        mOrderId = constant.getOrderId();
+        if (mOrderId == null) {
+            mOrderId = getResources().getString(R.string.OrderId);
+        }
+
+        initFirebase();
+        initRecycler();
+        initKitchenOpenDetail();
 
     }
 
+    private void initKitchenOpenDetail() {
+        String mOrderLink = getResources().getString(R.string.FireBase_Kitchen_Open_URL);
+        final Firebase mRef = new Firebase(mOrderLink);
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean vExist = dataSnapshot.exists();
+                if (vExist) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        KitchenOpen post = postSnapshot.getValue(KitchenOpen.class);
+                        mSno = post.getSno();
+                        nOrderId = post.getOrderid();
+                    }
+                } else {
+                    mSno = 1;
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
 
     // Restoring the item list and the keys of the items: they will be passed to the adapter
     private void handleInstanceState(Bundle savedInstanceState) {
@@ -84,89 +116,40 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingCart 
     }
 
     @Override
-    public void send(int TotalAmount, String BillId, String TableNo) {
+    public void send(int TotalAmount) {
         mTotalAmount = TotalAmount;
-        mBillId = BillId;
-        mTableNo = TableNo;
         vTotalAmount.setText("RS " + TotalAmount);
     }
 
-    private void setupFirebase() {
-        Firebase.setAndroidContext(this);
-        String firebaseLocation = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableNo;
+    //Firebase Query
+    private void initFirebase() {
+        String firebaseLocation = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableId;
         mQuery = new Firebase(firebaseLocation);
-
-        String BillLink = getResources().getString(R.string.FireBase_Bill_URL);
-        Firebase mRef = new Firebase(BillLink);
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                boolean vExist = snapshot.exists();
-                if (vExist) {
-                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                        Bill post = postSnapshot.getValue(Bill.class);
-                        mBillSno = post.getSno();
-                        mbillid = post.getBillNo();
-                    }
-                } else {
-                    mBillSno = 1;
-                }
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
     }
 
-    private void setUpRecycler() {
-
+    //Initializing Recycler View
+    private void initRecycler() {
         recyclerView = (RecyclerView) findViewById(R.id.order_list_recycler);
-        mMyAdapter = new ShoppingCartAdapter(mQuery, Order.class, mAdapterItems, mAdapterKeys);
-        mMyAdapter.send(this);
+        mAdapter = new ShoppingCartAdapter(mQuery, Order.class, mAdapterItems, mAdapterKeys);
+        mAdapter.send(this);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(mMyAdapter);
+        recyclerView.setAdapter(mAdapter);
     }
 
-
+    //ORDERING THE FOOD
     public void order(View view) {
-
-        Firebase.setAndroidContext(this);
-
-        if (!mbillid.equals(mBillId)) {
-            ++mBillSno;
+        if (!mOrderId.equals(nOrderId)) {
+            ++mSno;
         }
 
-        String FireBaseLink = getResources().getString(R.string.FireBase_URL);
+        String FireBaseLink = getResources().getString(R.string.FireBase_Kitchen_Open_URL);
         Firebase mRef = new Firebase(FireBaseLink);
-        Firebase Ref = mRef.child("Bill").child(mBillSno + "");
-
-        Date cDate = new Date();
-        String mDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
-
-        Bill bill = new Bill(mBillSno, mBillId, mTotalAmount, mTableNo, mDate);
-
-        Ref.setValue(bill, new Firebase.CompletionListener() {
-            @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                if (firebaseError != null) {
-                    System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                    Toast.makeText(ShoppingCartHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
-                } else {
-                    System.out.println("Data saved successfully.");
-                    Toast.makeText(ShoppingCartHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        Firebase aRef = mRef.child("Open").child(mBillSno + "");
-        Order order = new Order(mTableNo, mBillId, mBillSno);
-        aRef.setValue(order, new Firebase.CompletionListener() {
+        Firebase aRef = mRef.child(mSno + "");
+        KitchenOpen kitchenOpen = new KitchenOpen(mSno, mOrderId, mTableId, mTotalAmount);
+        aRef.setValue(kitchenOpen, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {

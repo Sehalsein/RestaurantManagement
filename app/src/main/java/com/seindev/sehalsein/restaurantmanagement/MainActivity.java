@@ -89,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, AddCustomerHome.class));
     }
 
+    public void cashier(View view) {
+        startActivity(new Intent(MainActivity.this, CashierHome.class));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

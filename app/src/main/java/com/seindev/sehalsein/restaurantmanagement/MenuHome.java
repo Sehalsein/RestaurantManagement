@@ -22,14 +22,14 @@ import java.util.ArrayList;
  */
 public class MenuHome extends AppCompatActivity implements MenuClickListener {
 
+    //Constant
+    private Constant constant;
+
+    //RECYCLER VIEW VARIABLE
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
     private final static String SAVED_ADAPTER_KEYS = "SAVED_ADAPTER_KEYS";
-
-    private String mBillNo;
-    private String mTableNo;
-
     private Query mQuery;
-    private MenuHomeAdapter mMyAdapter;
+    private MenuHomeAdapter mAdapter;
     private ArrayList<Menu> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
 
@@ -41,15 +41,10 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         handleInstanceState(savedInstanceState);
 
-        Intent intent = getIntent();
-        mTableNo = intent.getStringExtra("TableNo");
-        mBillNo = intent.getStringExtra("BillNo");
-
-        setupFirebase();
-        setupRecyclerview();
+        initFirebase();
+        initRecyclerView();
     }
 
     // Restoring the item list and the keys of the items: they will be passed to the adapter
@@ -65,30 +60,34 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
         }
     }
 
-    private void setupFirebase() {
-        Firebase.setAndroidContext(this);
-        String firebaseLocation = getResources().getString(R.string.FireBase_Menu_URL);
+    //Initializing FireBase
+    private void initFirebase() {
 
+        String firebaseLocation = getResources().getString(R.string.FireBase_Menu_URL);
         //QUERY
         //mQuery = new Firebase(firebaseLocation).orderByChild("category").equalTo("burger");
-
         mQuery = new Firebase(firebaseLocation);
 
     }
 
-    private void setupRecyclerview() {
+    //Initializing Recycler View
+    private void initRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.menu_recycler);
-        mMyAdapter = new MenuHomeAdapter(mQuery, Menu.class, mAdapterItems, mAdapterKeys);
-        mMyAdapter.setMenuClickListener(this);
+        mAdapter = new MenuHomeAdapter(mQuery, Menu.class, mAdapterItems, mAdapterKeys);
+        mAdapter.setMenuClickListener(this);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
-        recyclerView.setAdapter(mMyAdapter);
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         getMenuInflater().inflate(R.menu.menu_menu_home, menu);
+
+        //TODO SHOPPING CART INCREMENT 
+        menu.findItem(R.id.action_settings).setIcon(R.drawable.vector_shopping_cart);
+
         return true;
     }
 
@@ -97,11 +96,7 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
         switch (item.getItemId()) {
             case R.id.action_settings:
 
-                Intent intent = new Intent(MenuHome.this, ShoppingCartHome.class);
-                intent.putExtra("TableNo", mTableNo);
-                intent.putExtra("BillNo", mBillNo);
-                startActivity(intent);
-
+                startActivity(new Intent(MenuHome.this, ShoppingCartHome.class));
                 return true;
 
             default:
@@ -116,22 +111,19 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // outState.putParcelable(SAVED_ADAPTER_ITEMS, Parcels.wrap(mMyAdapter.getItems()));
-        outState.putStringArrayList(SAVED_ADAPTER_KEYS, mMyAdapter.getKeys());
+        // outState.putParcelable(SAVED_ADAPTER_ITEMS, Parcels.wrap(mAdapter.getItems()));
+        outState.putStringArrayList(SAVED_ADAPTER_KEYS, mAdapter.getKeys());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMyAdapter.destroy();
+        mAdapter.destroy();
     }
 
     @Override
     public void itemClicked(View view, String DishId) {
-        Intent intent = new Intent(MenuHome.this, ItemDetail.class);
-        intent.putExtra("DishId", DishId);
-        intent.putExtra("TableNo", mTableNo);
-        intent.putExtra("BillNo", mBillNo);
-        startActivity(intent);
+        constant.setDishid(DishId);
+        startActivity(new Intent(MenuHome.this, ItemDetail.class));
     }
 }

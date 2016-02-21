@@ -70,7 +70,7 @@ public class AdminCashHome extends Fragment {
                 float mLifeTime = 0;
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Bill post = postSnapshot.getValue(Bill.class);
-                    System.out.println(post.getBillNo() + " - " + post.getDate());
+                    System.out.println(post.getBillid() + " - " + post.getDate());
                     mLifeTime += post.getPrice();
                 }
                 vTextEarnings.setText("Rs " + mLifeTime);
@@ -106,7 +106,7 @@ public class AdminCashHome extends Fragment {
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Bill post = postSnapshot.getValue(Bill.class);
-                    System.out.println(post.getBillNo() + " - " + post.getDate());
+                    System.out.println(post.getBillid() + " - " + post.getDate());
                     mYesterday += post.getPrice();
                 }
                 vTextYesterday.setText("Rs " + mYesterday);
@@ -130,7 +130,7 @@ public class AdminCashHome extends Fragment {
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Bill post = postSnapshot.getValue(Bill.class);
-                    System.out.println(post.getBillNo() + " LAST WEEK - " + post.getPrice());
+                    System.out.println(post.getBillid() + " LAST WEEK - " + post.getPrice());
                     mLastWeek += post.getPrice();
 
 
@@ -175,7 +175,7 @@ public class AdminCashHome extends Fragment {
 
     private void setupFireBaseToday() {
 
-        Firebase.setAndroidContext(getActivity());
+        //Firebase.setAndroidContext(getActivity());
 
         String mFireBaseLinkBill = getResources().getString(R.string.FireBase_Bill_URL);
         Firebase bRef = new Firebase(mFireBaseLinkBill);
@@ -191,7 +191,7 @@ public class AdminCashHome extends Fragment {
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Bill post = postSnapshot.getValue(Bill.class);
-                    System.out.println(post.getBillNo() + " - " + post.getDate());
+                    System.out.println(post.getBillid() + " - " + post.getDate());
                     mTotalAmount += post.getPrice();
                 }
                 vTextToday.setText("Rs " + mTotalAmount);
