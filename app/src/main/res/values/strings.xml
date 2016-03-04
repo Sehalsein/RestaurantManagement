@@ -13,44 +13,19 @@
 
 
     <string-array name="categories">
-        <item>Soup</item>
-        <item>Salad</item>
-        <item>Roti</item>
-        <item>Biriyani</item>
-        <item>Rice</item>
-        <item>Noodles</item>
-        <item>Fried Rice</item>
-        <item>Indian</item>
-        <item>Chinese</item>
-        <item>Chicken</item>
-        <item>Mutton</item>
-        <item>Egg</item>
-        <item>Veg</item>
-        <item>Fish</item>
-        <item>Ice Cream</item>
-        <item>Fresh Juice</item>
-        <item>Milk Shakes</item>
+        <item>Beverages</item>
+        <item>Starters and Snacks</item>
+        <item>Soups</item>
+        <item>Mini Kerala Thali Meals</item>
+        <item>Seafood</item>
+        <item>Meat</item>
+        <item>Vegetarian</item>
+        <item>Side Dishes</item>
+        <item>From Here and There</item>
+        <item>Pasta</item>
+        <item>Desserts</item>
     </string-array>
 
-    <string-array name="tags">
-        <item>Soup</item>
-        <item>Salad</item>
-        <item>Roti</item>
-        <item>Biriyani</item>
-        <item>Rice</item>
-        <item>Noodles</item>
-        <item>Fried Rice</item>
-        <item>Indian</item>
-        <item>Chinese</item>
-        <item>Chicken</item>
-        <item>Mutton</item>
-        <item>Egg</item>
-        <item>Veg</item>
-        <item>Fish</item>
-        <item>Ice Cream</item>
-        <item>Fresh Juice</item>
-        <item>Milk Shakes</item>
-    </string-array>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -77,6 +52,8 @@
     <string name="FireBase_Bill_URL">https://restaurant-managment.firebaseio.com/Bill</string>
     <string name="FireBase_Kitchen_Open_URL">https://restaurant-managment.firebaseio.com/KitchenOpen</string>
     <string name="FireBase_Cashier_Open_URL">https://restaurant-managment.firebaseio.com/CashierOpen</string>
+    <string name="FireBase_Login_URL">https://restaurant-managment.firebaseio.com/Login</string>
+    <string name="FireBase_Active_URL">https://restaurant-managment.firebaseio.com/Active</string>
 
 
     <!-- Strings related to CONSTANT -->
@@ -84,9 +61,25 @@
     <string name="BillId">B001</string>
     <string name="OrderId">F001</string>
     <string name="HomeOrderId">H001</string>
+    <string name="CustomerId">C001</string>
     <string name="DishId">K001</string>
     <string name="DineIn">DineIn</string>
     <string name="HomeDelivery">HomeDelivery</string>
+
+    <!-- CONSTANT CODE -->
+    <string name="TableCode">T</string>
+    <string name="BillCode">B</string>
+    <string name="OrderCode">F</string>
+    <string name="HomeOrderCode">H</string>
+    <string name="CustomerCode">C</string>
+    <string name="DishCode">K</string>
+
+
+    <!-- Strings related to ADMIN -->
+    <string name="percentageUp">increase</string>
+    <string name="percentageDown">decrease</string>
+    <string name="percentageNo">nogrowth</string>
+    <string name="percentageStable">samegrowth</string>
 
 
     <string name="title_activity_item__detail">Item_Detail</string>
@@ -97,6 +90,11 @@
     <string name="title_activity_add_customer_home">AddCustomerHome</string>
     <string name="title_activity_kitchen_home">KitchenHome</string>
     <string name="title_activity_cashier">Cashier</string>
+    <string name="title_activity_dialog_box">DialogBox</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_add_staff">AddStaff</string>
+    <string name="title_activity_splash">Splash</string>
+    <string name="title_activity_filter">Filter</string>
 
 
 </resources>

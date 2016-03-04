@@ -1,5 +1,6 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -29,6 +29,7 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
 
     //XML Variable
     private TextView vTotalAmount;
+    private TextView vHeader;
 
     //Variable
     private int mTotalAmount;
@@ -42,6 +43,9 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
     private ShoppingCartAdapter mAdapter;
     private ArrayList<Order> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
+
+    //TypeFace
+    private Typeface caveat, greatvibes, lobster, alexbrush, milonga;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,10 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
         handleInstanceState(savedInstanceState);
 
         vTotalAmount = (TextView) findViewById(R.id.textTotalAmount);
+        vHeader = (TextView) findViewById(R.id.textOrderHeader);
+
+        lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
+        vHeader.setTypeface(lobster);
 
         mTableId = constant.getTableId();
         if (mTableId == null) {
@@ -78,7 +86,7 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
     }
 
     private void initKitchenOpenDetail() {
-        String mOrderLink = getResources().getString(R.string.FireBase_Kitchen_Open_URL);
+        final String mOrderLink = getResources().getString(R.string.FireBase_Kitchen_Open_URL);
         final Firebase mRef = new Firebase(mOrderLink);
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -142,6 +150,7 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
     //ORDERING THE FOOD
     public void order(View view) {
         if (!mOrderId.equals(nOrderId)) {
+            //Toast.makeText(ShoppingCartHome.this, "SNO if eqquals : " + mSno, Toast.LENGTH_LONG).show();
             ++mSno;
         }
 
@@ -154,14 +163,13 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
                     System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                    Toast.makeText(ShoppingCartHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(ShoppingCartHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
                 } else {
                     System.out.println("Data saved successfully.");
-                    Toast.makeText(ShoppingCartHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(ShoppingCartHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
-
+        onBackPressed();
     }
 }

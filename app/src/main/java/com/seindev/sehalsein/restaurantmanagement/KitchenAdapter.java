@@ -23,7 +23,6 @@ import java.util.ArrayList;
  */
 public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewHolder, KitchenOpen> {
 
-
     //VARIABLE
     private TextView vTotalAmount;
     //private String mBillId, mbillid;
@@ -34,7 +33,6 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
 
     //CONSTANT VARIABLE
     private String mOrderId;
-
 
     //RECYCLER VIEW
     private KitchenItemAdapter mMyAdapter;
@@ -53,13 +51,14 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView vTextBillNo;
+        private TextView vTextBillNo, vTextTableNo;
         private RecyclerView recyclerView;
         private LinearLayout vKitchenCard;
 
         public ViewHolder(View view) {
             super(view);
             vTextBillNo = (TextView) view.findViewById(R.id.textBillNo);
+            vTextTableNo = (TextView) view.findViewById(R.id.textTableNo);
             recyclerView = (RecyclerView) view.findViewById(R.id.kitchen_list_recycler);
             vKitchenCard = (LinearLayout) view.findViewById(R.id.kitchen_card);
         }
@@ -89,6 +88,7 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
     public void onBindViewHolder(final KitchenAdapter.ViewHolder holder, final int position) {
         final KitchenOpen item = getItem(position);
         holder.vTextBillNo.setText(item.getOrderid());
+        holder.vTextTableNo.setText(item.getTableid());
 
         mOrderId = item.getOrderid();
 
@@ -97,6 +97,7 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (kitchenClickListener != null) {
+                    mOrderId = item.getOrderid();
                     kitchenClickListener.itemClicked(v, mOrderId, item.getSno(), item.getTableid(), item.getTotalamount());
                     return true;
                 } else {
@@ -143,21 +144,21 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
 
     @Override
     protected void itemAdded(KitchenOpen item, String key, int position) {
-        Log.d("KitchenAdapter", "Added a new item to the adapter.");
+        // Log.d("KitchenAdapter", "Added a new item to the adapter.");
     }
 
     @Override
     protected void itemChanged(KitchenOpen oldItem, KitchenOpen newItem, String key, int position) {
-        Log.d("KitchenAdapter", "Changed an item.");
+        // Log.d("KitchenAdapter", "Changed an item.");
     }
 
     @Override
     protected void itemRemoved(KitchenOpen item, String key, int position) {
-        Log.d("KitchenAdapter", "Removed an item from the adapter.");
+        // Log.d("KitchenAdapter", "Removed an item from the adapter.");
     }
 
     @Override
     protected void itemMoved(KitchenOpen item, String key, int oldPosition, int newPosition) {
-        Log.d("KitchenAdapter", "Moved an item.");
+        // Log.d("KitchenAdapter", "Moved an item.");
     }
 }

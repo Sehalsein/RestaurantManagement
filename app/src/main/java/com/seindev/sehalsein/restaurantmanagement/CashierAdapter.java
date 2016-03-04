@@ -106,6 +106,7 @@ public class CashierAdapter extends FirebaseRecyclerAdapter<CashierAdapter.ViewH
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (cashierClickListner != null) {
+                    mOrderId = item.getOrderid();
                     cashierClickListner.itemClicked(v, mOrderId, item.getSno(), item.getTableid(), item.getTotalamount());
                     return true;
                 } else {

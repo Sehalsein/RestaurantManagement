@@ -33,13 +33,6 @@
             android:onClick="icon"
             android:src="@drawable/cookbook" />
 
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="ENTER TABLE NO (T001)" />
-
-
         <Button
             android:id="@+id/buttonDineIn"
             android:layout_width="100dp"
@@ -52,7 +45,7 @@
             android:gravity="center"
             android:onClick="dineIn"
             android:text="DINE IN"
-            android:textColor="@color/primarytextBlack" />
+            android:textColor="@color/colorPrimaryText" />
 
         <Button
             android:id="@+id/buttonDelivery"
@@ -65,7 +58,51 @@
             android:gravity="center"
             android:onClick="homeDelivery"
             android:text="HOME DELIVERY"
-            android:textColor="@color/primarytextBlack" />
+            android:textColor="@color/colorPrimaryText" />
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="TABLE 1" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/imageViewLogo"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/imageViewLogo"
+                android:text="TABLE 2" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/radioButton"
+                android:text="TABLE 3" />
+
+            <RadioButton
+                android:id="@+id/radioButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/radioButton2"
+                android:layout_alignStart="@+id/radioButton2"
+                android:layout_below="@+id/radioButton2"
+                android:text="TABLE 4" />
+
+        </RadioGroup>
+
 
     </RelativeLayout>
 

@@ -1,38 +1,31 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
 /**
- * Created by sehalsein on 02/02/16.
+ * Created by sehalsein on 22/02/16.
  */
 public class Customer {
-
-    private String customerId;
-    private String customerName;
-    private String mobileNo;
     private int sno;
+    private String customerid;
+    private String customername;
 
     public Customer() {
     }
 
-    public Customer(String customerId, String customerName, String mobileNo, int sno) {
-        this.customerId = customerId;
-        this.customerName = customerName;
-        this.mobileNo = mobileNo;
+    public Customer(int sno, String customerid, String customername) {
         this.sno = sno;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public String getMobileNo() {
-        return mobileNo;
+        this.customerid = customerid;
+        this.customername = customername;
     }
 
     public int getSno() {
         return sno;
+    }
+
+    public String getCustomerid() {
+        return customerid;
+    }
+
+    public String getCustomername() {
+        return customername;
     }
 }

@@ -12,7 +12,8 @@
         android:id="@+id/review_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_review_list">
+        android:background="@color/colorLightBG"
+        tools:listitem="@layout/review_list">
 
     </android.support.v7.widget.RecyclerView>
 

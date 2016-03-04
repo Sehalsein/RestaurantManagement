@@ -6,20 +6,33 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
 
     <style name="MenuTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimaryYellow</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkYellow</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimaryMenu</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkMenu</item>
+        <item name="colorAccent">@color/coloeAccentMenu</item>
+
+
+        <!-- <item name="colorPrimaryLight">@color/colorPrimaryLightMenu</item>
+        <item name="colorIcon">@color/colorIconsMenu</item>
+        <item name="colorDivider">@color/colorDividerMenu</item>
+        <item name="colorPrimaryText">@color/colorPrimaryTextMenu</item>
+        <item name="colorSecondaryText">@color/colorSecondaryTextMenu</item> -->
     </style>
 
     <style name="AdminTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimaryRed</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkRed</item>
-        <item name="colorAccent">@color/colorRedAccent</item>
+        <item name="colorPrimary">@color/colorPrimaryAdmin</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkAdmin</item>
+        <item name="colorAccent">@color/coloeAccentAdmin</item>
+        <!-- <item name="colorPrimaryLight">@color/colorPrimaryLightAdmin</item>
+         <item name="colorIcon">@color/colorIconsAdmin</item>
+         <item name="colorDivider">@color/colorDividerAdmin</item>
+         <item name="colorPrimaryText">@color/colorPrimaryTextAdmin</item>
+         <item name="colorSecondaryText">@color/colorSecondaryTextAdmin</item> -->
     </style>
 
     <style name="AppTheme.NoActionBar">

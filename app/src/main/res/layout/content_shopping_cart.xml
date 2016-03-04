@@ -27,43 +27,43 @@
                 android:layout_margin="5dp"
                 android:clickable="true"
                 android:stateListAnimator="@anim/card_raise"
-
                 card_view:cardElevation="@dimen/card_idle">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="YOUR ORDER"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:clickable="true"
-                android:stateListAnimator="@anim/card_raise"
-
-                card_view:cardElevation="@dimen/card_idle">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/order_list_recycler"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/order_list" />
-                </RelativeLayout>
+                        android:background="@color/colorHeaderCard"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/textOrderHeader"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Your Order"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textSize="25dp" />
+                    </LinearLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/order_list_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:listitem="@layout/order_list" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
 
             </android.support.v7.widget.CardView>
 
@@ -121,6 +121,8 @@
                         android:id="@+id/buttonShopping"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/button_rounded"
                         android:onClick="order"
                         android:text="ORDER" />
                 </LinearLayout>

@@ -17,52 +17,43 @@
         card_view:cardCornerRadius="10dp"
         card_view:cardElevation="@dimen/card_idle">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/menu_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fb17e2ac"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/imageDishIcon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:background="@color/cardview_dark_background" />
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:layout_toRightOf="@+id/imageDishIcon"
+                android:layout_toEndOf="@+id/imageDishIcon">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/textDishName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentTop="true"
-                    android:orientation="vertical">
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:text="DISH NAME"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <TextView
-                        android:id="@+id/textDishName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="DISH NAME"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/textIngredients"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ingredients"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </android.support.v7.widget.CardView>

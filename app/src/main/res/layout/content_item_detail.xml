@@ -12,13 +12,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#FAFAFA"
         android:orientation="vertical">
-
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="#FF0066" />
+            android:background="@drawable/rice"
+            android:scaleType="fitXY" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/quantity_card"
@@ -37,7 +38,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#55000000"
+                    android:background="@color/colorHeaderCard"
                     android:orientation="vertical"
                     android:paddingBottom="20dp"
                     android:paddingLeft="10dp"
@@ -45,19 +46,22 @@
                     android:paddingTop="20dp">
 
                     <TextView
+                        android:id="@+id/textHeaderQuantity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
-                        android:text="QUANTITY" />
+                        android:text="Quantity"
+                        android:textColor="@color/colorItemText" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/colorItemCard"
                     android:weightSum="1">
 
                     <Button
@@ -68,16 +72,21 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/button_rounded"
                         android:onClick="buttonminus"
-                        android:text="-" />
+                        android:text="-"
+                        android:textColor="@color/colorWhiteText"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/test"
+                        android:id="@+id/textQuantity"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="0" />
+                        android:text="0"
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/buttonplus"
@@ -86,8 +95,12 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/button_rounded"
                         android:onClick="buttonplus"
-                        android:text="+" />
+                        android:text="+"
+                        android:textColor="@color/colorWhiteText"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -107,20 +120,22 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#55000000"
+                android:background="@color/colorHeaderCard"
                 android:paddingBottom="20dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="20dp">
 
                 <TextView
+                    android:id="@+id/textHeaderSpicy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:text="Spicy Level" />
+                    android:text="Spicy Level"
+                    android:textColor="@color/colorItemText" />
 
                 <TextView
                     android:id="@+id/textSpicyLevel"
@@ -129,7 +144,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:text="RATING" />
+                    android:text="RATING"
+                    android:textColor="@color/colorItemText" />
 
             </RelativeLayout>
 
@@ -147,21 +163,22 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#55000000"
+                android:background="@color/colorHeaderCard"
                 android:paddingBottom="20dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="20dp">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/textHeaderRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
-                    android:text="RATINGS" />
+                    android:text="Ratings"
+                    android:textColor="@color/colorItemText" />
 
                 <RatingBar
                     android:id="@+id/ratingBar"
@@ -171,7 +188,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:isIndicator="true" />
+                    android:isIndicator="true"
+                    android:textColor="@color/colorItemText" />
 
             </RelativeLayout>
 
@@ -194,7 +212,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#55000000"
+                    android:background="@color/colorHeaderCard"
                     android:orientation="vertical"
                     android:paddingBottom="20dp"
                     android:paddingLeft="10dp"
@@ -202,19 +220,22 @@
                     android:paddingTop="20dp">
 
                     <TextView
+                        android:id="@+id/textHeaderDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
-                        android:text="Description" />
+                        android:text="Description"
+                        android:textColor="@color/colorItemText" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorItemCard"
                     android:paddingBottom="20dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
@@ -228,7 +249,8 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
-                        android:text="Description" />
+                        android:text="Description"
+                        android:textColor="@color/colorItemText" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -252,20 +274,22 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#55000000"
+                    android:background="@color/colorHeaderCard"
                     android:paddingBottom="20dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingTop="20dp">
 
                     <TextView
+                        android:id="@+id/textHeaderReview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
-                        android:text="REVIEW" />
+                        android:text="Review"
+                        android:textColor="@color/colorItemText" />
 
                     <TextView
                         android:id="@+id/textmore"
@@ -275,7 +299,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:onClick="morereview"
-                        android:text="More" />
+                        android:text="More"
+                        android:textColor="@color/colorItemText" />
 
                 </RelativeLayout>
 
@@ -291,20 +316,20 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-
+                            android:layout_height="50dp"
                             android:orientation="horizontal"
                             android:padding="10dp">
 
                             <ImageView
+                                android:id="@+id/imageDisplayIcon"
                                 android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:background="#00ff99" />
+                                android:layout_height="match_parent"
+                                android:src="@drawable/vector_user" />
 
                             <TextView
                                 android:id="@+id/customername"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_marginLeft="20dp"
                                 android:text="Customer Name"
                                 android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -319,32 +344,40 @@
                             <TextView
                                 android:id="@+id/timestamp"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_centerVertical="true"
                                 android:layout_margin="5dp"
+                                android:paddingBottom="2dp"
+                                android:paddingLeft="2dp"
+                                android:paddingRight="5dp"
+                                android:paddingTop="2dp"
                                 android:text="TIME STAMP"
                                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
                             <TextView
                                 android:id="@+id/textRated"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_centerVertical="true"
+                                android:layout_margin="5dp"
                                 android:layout_toLeftOf="@+id/textIndRating"
                                 android:layout_toStartOf="@+id/textIndRating"
+                                android:paddingBottom="2dp"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:paddingTop="2dp"
                                 android:text="RATED" />
 
 
                             <TextView
                                 android:id="@+id/textIndRating"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_alignParentTop="true"
                                 android:layout_centerVertical="true"
                                 android:layout_margin="5dp"
-                                android:background="#FFFF00"
                                 android:paddingBottom="2dp"
                                 android:paddingLeft="5dp"
                                 android:paddingRight="5dp"
@@ -364,7 +397,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_margin="10dp"
                                 android:text="REVIEWS"
-                                android:textColor="@color/primarytextBlack" />
+                                android:textColor="@color/colorPrimaryText" />
                         </LinearLayout>
 
                     </LinearLayout>

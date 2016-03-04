@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class AdminHome extends AppCompatActivity {
 
@@ -82,7 +81,7 @@ public class AdminHome extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Toast.makeText(this, "SETTINGS", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "SETTINGS", Toast.LENGTH_LONG).show();
             return true;
         }
 
@@ -144,6 +143,8 @@ public class AdminHome extends AppCompatActivity {
             switch (position) {
                 case 0:
                     return AdminCashHome.newInstance();
+                case 1:
+                    return AdminMenuHome.newInstance();
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
 

@@ -2,7 +2,6 @@ package com.seindev.sehalsein.restaurantmanagement;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +54,8 @@ public class ShoppingCartAdapter extends FirebaseRecyclerAdapter<ShoppingCartAda
     public void onBindViewHolder(final ShoppingCartAdapter.ViewHolder holder, final int position) {
         final Order item = getItem(position);
 
-        int totalprice, price, quantity;
+        float totalprice, quantity;
+        float price = 0;
         price = item.getPrice();
         quantity = item.getQuanity();
         totalprice = price * quantity;
@@ -76,24 +76,24 @@ public class ShoppingCartAdapter extends FirebaseRecyclerAdapter<ShoppingCartAda
 
     @Override
     protected void itemAdded(Order item, String key, int position) {
-        Log.d("ShoppingCartAdapter", "Added a new item to the adapter.");
+        // Log.d("ShoppingCartAdapter", "Added a new item to the adapter.");
     }
 
     @Override
     protected void itemChanged(Order oldItem, Order newItem, String key, int position) {
-        Log.d("ShoppingCartAdapter", "Changed an item.");
+        // Log.d("ShoppingCartAdapter", "Changed an item.");
 
     }
 
     @Override
     protected void itemRemoved(Order item, String key, int position) {
-        Log.d("ShoppingCartAdapter", "Removed an item from the adapter.");
+        // Log.d("ShoppingCartAdapter", "Removed an item from the adapter.");
 
     }
 
     @Override
     protected void itemMoved(Order item, String key, int oldPosition, int newPosition) {
-        Log.d("ShoppingCartAdapter", "Moved an item.");
+        // Log.d("ShoppingCartAdapter", "Moved an item.");
 
     }
 

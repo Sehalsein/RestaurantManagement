@@ -39,7 +39,17 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:text="BillNo" />
-                
+
+                <TextView
+                    android:id="@+id/textTableNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:text="Table No" />
+
 
             </RelativeLayout>
 
@@ -53,7 +63,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/kitchen_list_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="200dp"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingTop="2dp" />
 

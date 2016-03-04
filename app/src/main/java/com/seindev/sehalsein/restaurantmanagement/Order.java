@@ -9,14 +9,14 @@ public class Order {
     private String dishid;
     private String dishname;
     private int quanity;
-    private int price;
+    private float price;
     private String tableid;
 
 
     public Order() {
     }
 
-    public Order(int sno, String orderid, String dishid, String dishname, int quanity, int price, String tableid) {
+    public Order(int sno, String orderid, String dishid, String dishname, int quanity, float price, String tableid) {
         this.sno = sno;
         this.orderid = orderid;
         this.dishid = dishid;
@@ -25,7 +25,6 @@ public class Order {
         this.price = price;
         this.tableid = tableid;
     }
-
 
     public int getSno() {
         return sno;
@@ -47,7 +46,7 @@ public class Order {
         return quanity;
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
     }
 

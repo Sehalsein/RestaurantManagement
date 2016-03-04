@@ -9,38 +9,29 @@ public class Constant {
     private static String OrderId;
     private static String BillId;
     private static String Service;
-    private static String Dishid;
+    private static String DishId;
+    private static String CustomerId;
     private static float TotalAmount;
+    private static String Category;
 
-    public static float getTotalAmount() {
-        return TotalAmount;
-    }
-
-    public static void setTotalAmount(float totalAmount) {
-        TotalAmount = totalAmount;
-    }
 
     public Constant() {
     }
 
-    public static String getDishid() {
-        return Dishid;
+    public static String getCategory() {
+        return Category;
     }
 
-    public static void setDishid(String dishid) {
-        Dishid = dishid;
+    public static void setCategory(String category) {
+        Category = category;
+    }
+
+    public static String getCustomerId() {
+        return CustomerId;
     }
 
     public static String getTableId() {
         return TableId;
-    }
-
-    public static String getService() {
-        return Service;
-    }
-
-    public static void setService(String service) {
-        Service = service;
     }
 
     public static void setTableId(String tableId) {
@@ -61,5 +52,33 @@ public class Constant {
 
     public static void setBillId(String billId) {
         BillId = billId;
+    }
+
+    public static String getService() {
+        return Service;
+    }
+
+    public static void setService(String service) {
+        Service = service;
+    }
+
+    public static String getDishId() {
+        return DishId;
+    }
+
+    public static void setDishId(String dishId) {
+        DishId = dishId;
+    }
+
+    public static void setCustomerId(String customerId) {
+        CustomerId = customerId;
+    }
+
+    public static float getTotalAmount() {
+        return TotalAmount;
+    }
+
+    public static void setTotalAmount(float totalAmount) {
+        TotalAmount = totalAmount;
     }
 }

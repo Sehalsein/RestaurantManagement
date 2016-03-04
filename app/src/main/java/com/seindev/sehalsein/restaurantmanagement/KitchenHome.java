@@ -16,11 +16,12 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,7 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
 
     //VARIABLE
     private int mSno;
+    private int nSno;
     private float mTotalAmount;
 
     //SWIPE
@@ -66,23 +68,40 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
         setContentView(R.layout.activity_kitchen_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+
 
         handleInstanceState(savedInstanceState);
 
         initFirebase();
         initRecyclerView();
-
+        initCashier();
 
     }
 
-    private void initDialog() {
+    private void initCashier() {
+
+        final String mOrderLink = getResources().getString(R.string.FireBase_Cashier_Open_URL);
+        final Firebase mRef = new Firebase(mOrderLink);
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean vExist = dataSnapshot.exists();
+                if (vExist) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        KitchenOpen post = postSnapshot.getValue(KitchenOpen.class);
+                        nSno = post.getSno();
+                    }
+                } else {
+                    nSno = 0;
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
     }
 
 
@@ -142,25 +161,27 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
                     Firebase mDelete = new Firebase(KitchenOpen);
                     mDelete.removeValue();
                 } else {
+                    ++nSno;
                     //KITCHEN SWIPE DELETE (COMPLETE)
                     mAdapter.removeItem(position);
                     String KitchenOpen = getResources().getString(R.string.FireBase_Kitchen_Open_URL) + "/" + mSno;
                     Firebase mDelete = new Firebase(KitchenOpen);
                     mDelete.removeValue();
 
+                    //ADDING ITEM To CASHIER
                     String FireBaseLink = getResources().getString(R.string.FireBase_Cashier_Open_URL);
                     Firebase mRef = new Firebase(FireBaseLink);
-                    Firebase aRef = mRef.child(mSno + "");
-                    KitchenOpen kitchenOpen = new KitchenOpen(mSno, mOrderId, mTableId, mTotalAmount);
+                    Firebase aRef = mRef.child(nSno + "");
+                    KitchenOpen kitchenOpen = new KitchenOpen(nSno, mOrderId, mTableId, mTotalAmount);
                     aRef.setValue(kitchenOpen, new Firebase.CompletionListener() {
                         @Override
                         public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                             if (firebaseError != null) {
                                 System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                                Toast.makeText(KitchenHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(KitchenHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
                             } else {
                                 System.out.println("Data saved successfully.");
-                                Toast.makeText(KitchenHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(KitchenHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
                             }
                         }
                     });

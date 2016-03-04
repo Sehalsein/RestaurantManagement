@@ -1,19 +1,18 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    FragmentManager fragmentManager;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        intiDialog();
     }
 
     public void menu(View view) {
@@ -38,11 +37,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        startActivity(new Intent(MainActivity.this, Login.class));
+        startActivity(new Intent(MainActivity.this, LoginHome.class));
     }
 
     public void login1(View view) {
-        startActivity(new Intent(MainActivity.this, Login1.class));
+        startActivity(new Intent(MainActivity.this, AddStaff.class));
+        //Toast.makeText(MainActivity.this, "OHH SO SAD", Toast.LENGTH_LONG).show();
+
     }
 
     public void welcome(View view) {
@@ -50,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void settings(View view) {
-        startActivity(new Intent(MainActivity.this, Welcome.class));
+        //startActivity(new Intent(MainActivity.this, DialogBox.class));
+        dialog.show();
     }
 
     public void shopping(View view) {
@@ -75,18 +77,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void dialograte(View view) {
 
-        /*
-        RatingDialog ratingDialog = new RatingDialog();
-        fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.main_layout, ratingDialog, "POP");
-        transaction.commit();*/
-        Toast.makeText(this, "SAD", Toast.LENGTH_LONG).show();
-        //startActivity(new Intent(MainActivity.this, ReviewHome.class));
+        dialog.show();
+
     }
 
     public void addcustomer(View view) {
-        startActivity(new Intent(MainActivity.this, AddCustomerHome.class));
+        //Toast.makeText(MainActivity.this, "AUTOMATIC :P", Toast.LENGTH_SHORT).show();
     }
 
     public void cashier(View view) {
@@ -113,5 +109,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void intiDialog() {
+        /*// create a Dialog component
+        dialog = new Dialog(this);
+        //tell the Dialog to use the dialog.xml as it's layout description
+//        dialog.setContentView(R.layout.content_add_review);
+        dialog.setTitle("Android Custom Dialog Box");
+
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.addreview);
+
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+*/
     }
 }

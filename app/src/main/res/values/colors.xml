@@ -1,18 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- COLORS FOR MAIn  -->
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <!-- BAsICs COLORS  -->
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorWhiteText">#FFFFFF</color>
+    <color name="colorSecondaryText">#727272</color>
+    <color name="colorIcons">#FFFFFF</color>
+    <color name="colorDivider">#B6B6B6</color>
 
-    <color name="colorPrimaryYellow">#FFEB3B</color>
-    <color name="colorPrimaryDarkYellow">#FBC02D</color>
 
-    <color name="colorPrimaryRed">#F44336</color>
-    <color name="colorPrimaryDarkRed">#D32F2F</color>
-    <color name="colorRedAccent">#FFFFFF</color>
+    <!-- Special Colors -->
+    <color name="colorHeaderCard">#727272</color>
+    <color name="colorDarkBG">#303030</color>
+    <color name="colorLightBG">#FAFAFA</color>
 
-    <color name="primarytextBlack">#000000</color>
+
+    <!-- ItemDetail -->
+    <color name="colorItemText">#212121</color>
+    <color name="colorItemCard">#FAFAFA</color>
+
+    <!-- COLORS FOR MENU  -->
+    <color name="colorPrimaryMenu">#009688</color>
+    <color name="colorPrimaryDarkMenu">#00796B</color>
+    <color name="colorPrimaryLightMenu">#B2DFDB</color>
+    <color name="coloeAccentMenu">#FF4081</color>
+    -->
+
+
+    <!-- COLORS FOR ADMIN
+     <color name="colorPrimaryMenu">#009688</color>
+    <color name="colorPrimaryDarkMenu">#00796B</color>
+    <color name="colorPrimaryLightMenu">#B2DFDB</color>
+    <color name="coloeAccentMenu">#FF4081</color> -->
+
+    <!-- COLORS FOR ADMIN  -->
+    <color name="colorPrimaryAdmin">#F44336</color>
+    <color name="colorPrimaryDarkAdmin">#D32F2F</color>
+    <color name="colorPrimaryLightAdmin">#FFCDD2</color>
+    <color name="coloeAccentAdmin">#009688</color>
 
 
     <!-- COLORS FOR RATINGS  -->

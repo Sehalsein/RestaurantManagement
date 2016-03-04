@@ -1,20 +1,24 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.Query;
 
 import java.util.ArrayList;
 
-public class ReviewHome extends AppCompatActivity {
+public class ReviewHome extends AppCompatActivity implements View.OnClickListener {
 
     //CONSTANT VARIABLE
     private Constant constant;
@@ -28,6 +32,12 @@ public class ReviewHome extends AppCompatActivity {
     private ReviewHomeAdapter mAdapter;
     private ArrayList<Review> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
+
+
+    //Floating Button
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab, fab1;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +54,7 @@ public class ReviewHome extends AppCompatActivity {
         });
 
 
-        mDishId = constant.getDishid();
+        mDishId = constant.getDishId();
         if (mDishId == null) {
             mDishId = getResources().getString(R.string.DishId);
         }
@@ -52,8 +62,56 @@ public class ReviewHome extends AppCompatActivity {
         handleInstanceState(savedInstanceState);
         initFirebase(mDishId);
         initRecyclerView();
+        initFloating();
 
+    }
 
+    public void initFloating() {
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) findViewById(R.id.fabAddReview);
+
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
+        fab.setOnClickListener(this);
+        fab1.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.fab:
+                animateFAB();
+                break;
+            case R.id.fabAddReview:
+                animateFAB();
+                startActivity(new Intent(ReviewHome.this, AddReviewHome.class));
+                break;
+        }
+    }
+
+    //ANIMATE FLOATING BUTTON
+    public void animateFAB() {
+
+        if (isFabOpen) {
+
+            fab.startAnimation(rotate_backward);
+            fab1.startAnimation(fab_close);
+            fab1.setClickable(false);
+            isFabOpen = false;
+            Log.d("Raj", "close");
+
+        } else {
+
+            fab.startAnimation(rotate_forward);
+            fab1.startAnimation(fab_open);
+            fab1.setClickable(true);
+            isFabOpen = true;
+            Log.d("Raj", "open");
+
+        }
     }
 
     // Restoring the item list and the keys of the items: they will be passed to the adapter
@@ -77,7 +135,7 @@ public class ReviewHome extends AppCompatActivity {
 
     private void initRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.review_recycler);
-        mAdapter = new ReviewHomeAdapter(mQuery, Review.class, mAdapterItems, mAdapterKeys);
+        mAdapter = new ReviewHomeAdapter(mQuery, Review.class, mAdapterItems, mAdapterKeys, this);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayout);
@@ -94,7 +152,7 @@ public class ReviewHome extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Toast.makeText(this, "SETTINGS", Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "SETTINGS", Toast.LENGTH_LONG).show();
                 return true;
 
 

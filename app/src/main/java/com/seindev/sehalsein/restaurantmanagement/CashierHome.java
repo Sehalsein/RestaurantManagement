@@ -71,18 +71,13 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
         setContentView(R.layout.activity_cashier_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+
 
         handleInstanceState(savedInstanceState);
 
         initFirebase();
         initRecyclerView();
+        initBillDetail();
 
     }
 
@@ -135,8 +130,8 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
                 if (direction == ItemTouchHelper.LEFT) {
                     mMyAdapter.removeItem(position);
 
-                    Toast.makeText(CashierHome.this, "DELETE", Toast.LENGTH_LONG).show();
-                    Toast.makeText(CashierHome.this, "BILL IDASIDSA : " + mBillId, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(CashierHome.this, "DELETE", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(CashierHome.this, "BILL IDASIDSA : " + mBillId, Toast.LENGTH_LONG).show();
 
                     //KITCHEN SWIPE DELETE (DELETE)
                     String KitchenOpen = getResources().getString(R.string.FireBase_Cashier_Open_URL) + "/" + nSno;
@@ -146,15 +141,19 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
                 } else {
                     //KITCHEN SWIPE (COMPLETE)
                     mMyAdapter.removeItem(position);
-                    String KitchenOpen = getResources().getString(R.string.FireBase_Cashier_Open_URL) + "/" + nSno;
-                    Firebase mDelete = new Firebase(KitchenOpen);
+                    String CashiernOpen = getResources().getString(R.string.FireBase_Cashier_Open_URL) + "/" + nSno;
+                    Firebase mDelete = new Firebase(CashiernOpen);
                     mDelete.removeValue();
 
                     String TableClear = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableId;
                     Firebase vDelete = new Firebase(TableClear);
                     vDelete.removeValue();
 
-                    initBillDetail();
+                    clearActice();
+
+
+                    addBill();
+                    //initBillDetail();
 
                     /*
                     removeView();
@@ -198,18 +197,22 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    private void initBillDetail() {
-        String mBillLink = getResources().getString(R.string.FireBase_Bill_URL);
-        final Firebase oRef = new Firebase(mBillLink);
-        //Checks the Serial Number of the previous KitchenOpen
+    private void clearActice() {
+
+        String mActiveLink = getResources().getString(R.string.FireBase_Active_URL);
+        final Firebase oRef = new Firebase(mActiveLink);
         oRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+
                 System.out.println("There are " + snapshot.getChildrenCount() + " KitchenOpen");
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Bill post = postSnapshot.getValue(Bill.class);
-                    mSno = post.getSno();
-                    mBillId = post.getBillid();
+                    Active post = postSnapshot.getValue(Active.class);
+                    if (mTableId.equals(post.getTableid())) {
+                        String ActiveClear = getResources().getString(R.string.FireBase_Active_URL) + "/" + post.getSno();
+                        Firebase vDelete = new Firebase(ActiveClear);
+                        vDelete.removeValue();
+                    }
                 }
             }
 
@@ -218,16 +221,49 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
-        if (mBillId == null) {
-            mBillId = getResources().getString(R.string.BillId);
+
+    }
+
+    private void initBillDetail() {
+        String mBillLink = getResources().getString(R.string.FireBase_Bill_URL);
+        final Firebase oRef = new Firebase(mBillLink);
+        //Checks the Serial Number of the previous KitchenOpen
+        oRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    System.out.println("There are " + snapshot.getChildrenCount() + " KitchenOpen");
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        Bill post = postSnapshot.getValue(Bill.class);
+                        mSno = post.getSno();
+                        mBillId = post.getBillid();
+                    }
+                    final int result = Integer.parseInt(OrderNumberOnly(mBillId));
+                    mBillId = OrderNumberCalc(result);
+                    ++mSno;
+                    Toast.makeText(CashierHome.this, "BILL ID: " + mBillId, Toast.LENGTH_SHORT).show();
+
+                } else {
+                    mBillId = getResources().getString(R.string.BillId);
+                    mSno = 1;
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+       /* if (mBillId == null) {
+       /*     mBillId = getResources().getString(R.string.BillId);
             mSno = 1;
         } else {
             final int result = Integer.parseInt(OrderNumberOnly(mBillId));
             mBillId = OrderNumberCalc(result);
             ++mSno;
-        }
+        }     */
 
-
+        /*
         Calendar cal = Calendar.getInstance();
         mDate = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
 
@@ -240,10 +276,32 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
                     System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                    Toast.makeText(CashierHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(CashierHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
                 } else {
                     System.out.println("Data saved successfully.");
-                    Toast.makeText(CashierHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(CashierHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });*/
+    }
+
+    public void addBill() {
+        Calendar cal = Calendar.getInstance();
+        mDate = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+
+        String FireBaseLink = getResources().getString(R.string.FireBase_Bill_URL);
+        Firebase mRef = new Firebase(FireBaseLink);
+        Firebase aRef = mRef.child(mSno + "");
+        Bill bill = new Bill(mSno, mBillId, mOrderId, mTotalAmount, mTableId, mDate);
+        aRef.setValue(bill, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                    //Toast.makeText(CashierHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                } else {
+                    System.out.println("Data saved successfully.");
+                    //Toast.makeText(CashierHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
                 }
             }
         });

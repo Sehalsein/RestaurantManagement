@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -18,11 +16,10 @@ import com.firebase.client.ValueEventListener;
 
 public class AddItemHome extends AppCompatActivity {
 
-    private EditText vDishName, vPrice, vQuantity, vSno, vDishId;
+    private EditText vDishName, vPrice, vSno, vDishId, vDescription, vImageUrl;
     private AutoCompleteTextView vCategory;
-    private MultiAutoCompleteTextView vTags;
     private String[] categories;
-    private String[] tags;
+    private String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +38,11 @@ public class AddItemHome extends AppCompatActivity {
         vDishName = (EditText) findViewById(R.id.editDishName);
         vPrice = (EditText) findViewById(R.id.editPrice);
         vSno = (EditText) findViewById(R.id.editSNo);
-        vQuantity = (EditText) findViewById(R.id.editQuantity);
         vCategory = (AutoCompleteTextView) findViewById(R.id.autocompletetextCategory);
-        vTags = (MultiAutoCompleteTextView) findViewById(R.id.multiautocompletetextTags);
-
+        vDescription = (EditText) findViewById(R.id.editDescription);
+        vImageUrl = (EditText) findViewById(R.id.editImageUrl);
         //ARRAY
         categories = getResources().getStringArray(R.array.categories);
-        tags = getResources().getStringArray(R.array.tags);
 
         vSno.setEnabled(false);
         vDishId.requestFocus();
@@ -60,19 +55,11 @@ public class AddItemHome extends AppCompatActivity {
         vPrice.setInputType(InputType.TYPE_CLASS_NUMBER);
         vSno.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-        //QUANTITY
-        vQuantity.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         //CATEGORY
         ArrayAdapter<String> mcategories = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, categories);
         vCategory.setAdapter(mcategories);
         vCategory.setThreshold(1);
-
-        //TAGS
-        ArrayAdapter<String> mtags = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tags);
-        vTags.setAdapter(mtags);
-        vTags.setThreshold(1);
-        vTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
         setUpFirebase();
 
@@ -85,15 +72,18 @@ public class AddItemHome extends AppCompatActivity {
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Menu post = postSnapshot.getValue(Menu.class);
-                    int sno = Integer.parseInt(post.getSNo());
-                    vSno.setText(++sno + "");
-
-                    //Toast.makeText(AddItemHome.this, "Exists : " + sno, Toast.LENGTH_SHORT).show();
-
+                if (snapshot.exists()) {
+                    System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        Menu post = postSnapshot.getValue(Menu.class);
+                        int sno = post.getSno();
+                        vSno.setText(++sno + "");
+                        //Toast.makeText(AddItemHome.this, "Exists : " + sno, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    vSno.setText("1");
                 }
+
             }
 
             @Override
@@ -105,22 +95,24 @@ public class AddItemHome extends AppCompatActivity {
 
     public void Additem(View view) {
 
-        String mDishName, mCategory, mTags, mDishId;
-        String mPrice, mQuantity, mSno;
+        String mDishName, mCategory, mDishId, mDescription;
+        String mImageUrl;
+        float mPrice = 0;
+        int mSno, mSpicyLevel = 0;
 
         final int[] Sno = new int[1];
 
         try {
             mDishId = String.valueOf(vDishId.getText());
-            mSno = vSno.getText().toString();
+            mSno = Integer.parseInt(vSno.getText().toString());
             mCategory = String.valueOf(vCategory.getText());
             mDishName = String.valueOf(vDishName.getText());
-            mPrice = vPrice.getText().toString();
-            mQuantity = vQuantity.getText().toString();
-            mTags = String.valueOf(vTags.getText());
+            mPrice = Float.parseFloat(vPrice.getText().toString());
+            mDescription = vDescription.getText().toString();
+            mImageUrl = vImageUrl.getText().toString();
 
             if (vSno.getText().toString().trim().length() <= 0) {
-                mSno = "";
+                mSno = 0;
             }
             if (vDishId.getText().toString().trim().length() <= 0) {
                 mDishId = "";
@@ -131,35 +123,58 @@ public class AddItemHome extends AppCompatActivity {
             if (vDishName.getText().toString().trim().length() <= 0) {
                 mDishName = "";
             }
-            if (vTags.getText().toString().trim().length() <= 0) {
-                mTags = "";
+            if (vDescription.getText().toString().trim().length() <= 0) {
+                mDescription = "";
             }
             if (vPrice.getText().toString().trim().length() <= 0) {
-                mPrice = "";
+                mPrice = 0;
             }
-            if (vQuantity.getText().toString().trim().length() <= 0) {
-                mQuantity = "";
+            if (vImageUrl.getText().toString().trim().length() <= 0) {
+                mImageUrl = "";
             }
-
             Firebase mRef = new Firebase("https://restaurant-managment.firebaseio.com");
-            Firebase Ref = mRef.child("Menu").child(mSno);
+            Firebase Ref = mRef.child("Menu").child(mSno + "");
 
 
-            if (mCategory == "" || mDishName == "" || mTags == "" || mPrice == "" || mQuantity == "" || mSno == "") {
-                Toast.makeText(this, "FIELD EMPTY ", Toast.LENGTH_LONG).show();
+            if (mCategory == "" || mDishId == "" || mDishName == "" || mDescription == "" || mPrice == 0) {
+                if (mCategory == "") {
+                    vCategory.setError("Enter Category!");
+                }
+                if (mDishId == "") {
+                    vDishId.setError("Enter Dish Id!");
+                }
+                if (mDishName == "") {
+                    vDishName.setError("Enter Dish Name!");
+                }
+                if (mDescription == "") {
+                    vDescription.setError("Enter Description!");
+                }
+                if (mPrice == 0) {
+                    vPrice.setError("Enter Price!");
+                }
+                if (mImageUrl == "") {
+                    vImageUrl.setError("Enter Image URL!!");
+                }
+
             } else {
 
-                Menu menu = new Menu(mSno, mDishId, mDishName, mPrice, mQuantity, mCategory, mTags);
+                Menu menu = new Menu(mSno, mDishId, mDishName, mPrice, mCategory, mDescription, mImageUrl);
 
                 Ref.setValue(menu, new Firebase.CompletionListener() {
                     @Override
                     public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                         if (firebaseError != null) {
                             System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                            Toast.makeText(AddItemHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(AddItemHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
                         } else {
                             System.out.println("Data saved successfully.");
-                            Toast.makeText(AddItemHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                            vDishId.setText("");
+                            vDishName.setText("");
+                            vPrice.setText("");
+                            vCategory.setText("");
+                            vDescription.setText("");
+                            vImageUrl.setText("");
+                            //Toast.makeText(AddItemHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -167,7 +182,7 @@ public class AddItemHome extends AppCompatActivity {
             }
 
         } catch (NullPointerException n) {
-            Toast.makeText(this, "" + n.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "" + n.toString(), Toast.LENGTH_LONG).show();
         }
 
     }
