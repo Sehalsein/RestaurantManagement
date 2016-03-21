@@ -17,29 +17,14 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
-
             android:background="@drawable/button_rounded"
             android:text="Add ITEM" />
 
-        <Button
-            android:id="@+id/buttonDeleteItem"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/menuadmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_rounded"
-            android:text="Delete ITEM" />
-
-        <Button
-            android:id="@+id/buttonUpdateItem"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_rounded"
-            android:text="Update ITEM" />
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 

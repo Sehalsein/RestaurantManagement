@@ -56,7 +56,13 @@
         <activity
             android:name=".Welcome"
             android:label="@string/title_activity_welcome"
-            android:theme="@style/MenuTheme" />
+            android:theme="@style/MenuTheme">
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ItemDetail"
             android:label="@string/title_activity_item__detail"
@@ -88,6 +94,21 @@
         <activity
             android:name=".Filter"
             android:label="@string/title_activity_filter"
+            android:theme="@style/AppTheme" />
+
+        <uses-permission android:name="android.permission.NFC" />
+
+        <uses-feature
+            android:name="android.hardware.nfc"
+            android:required="true" />
+
+        <activity
+            android:name=".UpdateItemHome"
+            android:label="@string/title_activity_update_item_home"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".HomeDeliveryDetail"
+            android:label="@string/title_activity_home_delivery_detail"
             android:theme="@style/AppTheme"></activity>
     </application>
 

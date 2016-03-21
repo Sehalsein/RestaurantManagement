@@ -15,9 +15,8 @@ public class Filter extends AppCompatActivity {
         setContentView(R.layout.activity_filter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        constant.setCategory("Seafood");
-        startActivity(new Intent(this,MenuHome.class));
+        startActivity(new Intent(this, MenuHome.class));
+        finish();
     }
 
 }

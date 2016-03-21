@@ -54,6 +54,8 @@
     <string name="FireBase_Cashier_Open_URL">https://restaurant-managment.firebaseio.com/CashierOpen</string>
     <string name="FireBase_Login_URL">https://restaurant-managment.firebaseio.com/Login</string>
     <string name="FireBase_Active_URL">https://restaurant-managment.firebaseio.com/Active</string>
+    <string name="FireBase_Kitchen_Online_URL">https://restaurant-managment.firebaseio.com/KitchenOnline</string>
+    <string name="FireBase_Delivery_URL">https://restaurant-managment.firebaseio.com/Delivery</string>
 
 
     <!-- Strings related to CONSTANT -->
@@ -73,6 +75,8 @@
     <string name="HomeOrderCode">H</string>
     <string name="CustomerCode">C</string>
     <string name="DishCode">K</string>
+    <string name="NewOrder">NEW</string>
+    <string name="DoneOrder">DONE</string>
 
 
     <!-- Strings related to ADMIN -->
@@ -95,6 +99,8 @@
     <string name="title_activity_add_staff">AddStaff</string>
     <string name="title_activity_splash">Splash</string>
     <string name="title_activity_filter">Filter</string>
+    <string name="title_activity_update_item_home">UpdateItemHome</string>
+    <string name="title_activity_home_delivery_detail">HomeDeliveryDetail</string>
 
 
 </resources>

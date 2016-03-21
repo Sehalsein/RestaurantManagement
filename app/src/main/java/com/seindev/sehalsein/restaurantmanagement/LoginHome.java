@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -106,10 +107,18 @@ public class LoginHome extends AppCompatActivity {
         } else {
 
             for (int i = 0; i <= UserName.length; i++) {
+                try {
+                    if (mUserName.equals(UserName[i]) && mPassword.equals(Password[i])) {
+                        correct = true;
+                        break;
+                    } else {
+                        correct = false;
+                    }
+                } catch (ArrayIndexOutOfBoundsException m) {
+                    System.out.print("ARRAY" + m.toString());
 
-                if (mUserName.equals(UserName[i]) && mPassword.equals(Password[i])) {
-                    correct = true;
-                    break;
+                } catch (Exception e) {
+                    System.out.print("EXCEPTIOn" + e.toString());
                 }
             }
             if (correct) {
@@ -126,6 +135,7 @@ public class LoginHome extends AppCompatActivity {
             } else {
                 vUserName.setError("Incorrect Username");
                 vPassword.setError("Incorrect Password");
+                Toast.makeText(LoginHome.this, "Incorrect username and password", Toast.LENGTH_LONG).show();
             }
         }
 

@@ -10,16 +10,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,10 +40,12 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
     private String mDishId;
 
     //DESIGN VARIABLE
-    private TextView vCustomerName, vDescription, vIndRatings, vReview, vQuantity, vSpicyLevel, vMore, vTimeStamp;
+    private TextView vCustomerName, vDescription, vIndRatings, vReview, vQuantity, vPrice, vMore, vTimeStamp;
     private LinearLayout vLayoutReview, vLayoutNoReview;
     private RatingBar vRatings;
     private Toolbar toolbar;
+    private Button vMinus;
+    private ImageView vImage;
 
     //Check Variables
     private boolean vReviewExist;
@@ -52,6 +56,7 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
     private int mSno = 0;
     private int nSno = 0;
     private int mQuantity = 0;
+    private int oQuantity = 0;
     private String nDishName;
     private String nOrderId;
     private String mDishName;
@@ -89,7 +94,7 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
         });
 
 
-        Toast.makeText(this, "ORDER ID : " + constant.getOrderId(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "ORDER ID : " + constant.getOrderId(), Toast.LENGTH_SHORT).show();
 
 
         //Initializing 
@@ -97,14 +102,17 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
         vDescription = (TextView) findViewById(R.id.textDescription);
         vIndRatings = (TextView) findViewById(R.id.textIndRating);
         vRatings = (RatingBar) findViewById(R.id.ratingBar);
-        vSpicyLevel = (TextView) findViewById(R.id.textSpicyLevel);
+        vPrice = (TextView) findViewById(R.id.textPrice);
         vReview = (TextView) findViewById(R.id.textReview);
         vQuantity = (TextView) findViewById(R.id.textQuantity);
         vLayoutNoReview = (LinearLayout) findViewById(R.id.layoutNoReview);
         vLayoutReview = (LinearLayout) findViewById(R.id.layoutReview);
         vMore = (TextView) findViewById(R.id.textmore);
         vTimeStamp = (TextView) findViewById(R.id.timestamp);
+        vMinus = (Button) findViewById(R.id.buttonminus);
+        vImage = (ImageView) findViewById(R.id.DishImage);
 
+        Picasso.with(this).load(constant.getImageid()).resize(400, 600).into(vImage);
 
         wQuanity = (TextView) findViewById(R.id.textHeaderQuantity);
         wDescription = (TextView) findViewById(R.id.textHeaderDescription);
@@ -147,8 +155,44 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
         //vCustomerName.setTypeface(milonga);
         initFloating();
         initOrderDetail();
+        initKitchenOnline();
 
 
+    }
+
+    private void initKitchenOnline() {
+        String mOrderLink = getResources().getString(R.string.FireBase_Kitchen_Online_URL);
+        final Firebase oRef = new Firebase(mOrderLink);
+        Firebase mRef = oRef.child(mTableId).child(mDishId);
+        //Toast.makeText(ItemDetail.this, "DISH ID : " + mDishId, Toast.LENGTH_SHORT).show();
+        //Query query = mRef.orderByChild("dishid").equalTo(mDishId + "");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean mExist = false;
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        KitchenOnline post = dataSnapshot.getValue(KitchenOnline.class);
+                        //Toast.makeText(ItemDetail.this, "ITEM DISH : " + mDishId + "\n ORDER DISH : " + post.getDishid(), Toast.LENGTH_SHORT).show();
+                        if (mDishId.equals(post.getDishid())) {
+                            oQuantity = post.getQuantity();
+                            mExist = true;
+                        }
+                    }
+                } else {
+                    //Toast.makeText(ItemDetail.this, "NOOOO : " + oQuantity, Toast.LENGTH_SHORT).show();
+                }
+                if (mExist) {
+                    vMinus.setEnabled(false);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     public void initFloating() {
@@ -381,6 +425,7 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
                     mPrice = post.getPrice();
                     mDishName = post.getDishname();
                     vDescription.setText(post.getDescription());
+                    vPrice.setText("\u20B9 " + post.getPrice() + "");
                     toolbar.setTitle(post.getDishname());
                     //toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimaryText));
                 }
@@ -482,16 +527,20 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
         mQuantity += 1;
         addOrder(mQuantity);
         addOrderDetail(mQuantity);
+        vMinus.setEnabled(true);
     }
 
     public void buttonminus(View view) {
-
+        if (mQuantity == oQuantity + 1) {
+            vMinus.setEnabled(false);
+        }
         if (mQuantity > 0) {
             --mQuantity;
 
+            //TODO USE SETTER INSTEAD OF CONSTRUCTOR
             deleteOrder(mQuantity);
             deleteOrderDetail(mQuantity);
-            //Deleting the entry when quantity = 0 
+            //Deleting the entry when quantity = 0
             if (mQuantity == 0) {
                 String OrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL) + "/" + mSno;
                 String Order = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableId + "/" + mSno;
@@ -510,7 +559,7 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
         String FirebaselinkOrder = getResources().getString(R.string.FireBase_Order_URL);
         Firebase mref = new Firebase(FirebaselinkOrder);
         Firebase Ref = mref.child(mTableId).child("" + mSno);
-        Order order = new Order(mSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId);
+        Order order = new Order(mSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId, getResources().getString(R.string.NewOrder));
         Ref.setValue(order, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -534,7 +583,7 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
         String FirebaselinkOrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL);
         Firebase mRef = new Firebase(FirebaselinkOrderDetail);
         Firebase ref = mRef.child("" + nSno);
-        Order orderdetail = new Order(nSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId);
+        Order orderdetail = new Order(nSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId, getResources().getString(R.string.NewOrder));
         ref.setValue(orderdetail, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -555,7 +604,7 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
 
         Firebase mref = new Firebase(FirebaselinkOrder);
         Firebase Ref = mref.child(mTableId).child("" + mSno);
-        Order menu = new Order(mSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId);
+        Order menu = new Order(mSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId, getResources().getString(R.string.NewOrder));
         Ref.setValue(menu, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -575,7 +624,7 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
         String FirebaselinkOrderDetail = getResources().getString(R.string.FireBase_OrderDetail_URL);
         Firebase mRef = new Firebase(FirebaselinkOrderDetail);
         Firebase ref = mRef.child("" + nSno);
-        Order orderdetail = new Order(nSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId);
+        Order orderdetail = new Order(nSno, mOrderId, mDishId, mDishName, mQuantity, mPrice, mTableId, getResources().getString(R.string.NewOrder));
         ref.setValue(orderdetail, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -590,7 +639,6 @@ public class ItemDetail extends AppCompatActivity implements View.OnClickListene
         });
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {

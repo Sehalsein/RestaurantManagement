@@ -13,7 +13,15 @@ public class Constant {
     private static String CustomerId;
     private static float TotalAmount;
     private static String Category;
+    private static int Imageid;
 
+    public static int getImageid() {
+        return Imageid;
+    }
+
+    public static void setImageid(int imageid) {
+        Imageid = imageid;
+    }
 
     public Constant() {
     }

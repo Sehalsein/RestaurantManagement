@@ -61,7 +61,7 @@ public class AdminHome extends AppCompatActivity {
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(R.drawable.tab_coin_selector);
         tabLayout.getTabAt(1).setIcon(R.drawable.tab_plate_selector);
-        tabLayout.getTabAt(2).setIcon(R.drawable.tab_staff_selector);
+       // tabLayout.getTabAt(2).setIcon(R.drawable.tab_staff_selector);
     }
 
 
@@ -155,7 +155,7 @@ public class AdminHome extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override

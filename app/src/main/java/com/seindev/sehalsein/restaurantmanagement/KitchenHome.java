@@ -50,6 +50,7 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
     //VARIABLE
     private int mSno;
     private int nSno;
+    private String nOrderId;
     private float mTotalAmount;
 
     //SWIPE
@@ -90,6 +91,7 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         KitchenOpen post = postSnapshot.getValue(KitchenOpen.class);
                         nSno = post.getSno();
+                        nOrderId = post.getOrderid();
                     }
                 } else {
                     nSno = 0;
@@ -161,7 +163,16 @@ public class KitchenHome extends AppCompatActivity implements KitchenClickListen
                     Firebase mDelete = new Firebase(KitchenOpen);
                     mDelete.removeValue();
                 } else {
-                    ++nSno;
+                    try {
+                        if (!mOrderId.equals(nOrderId)) {
+                            ++nSno;
+                        }
+                    } catch (NullPointerException n) {
+                        System.out.println("KITCHEN NULL. " + n.toString());
+                    } catch (Exception e) {
+                        System.out.println("KITCHEN E. " + e.toString());
+                    }
+
                     //KITCHEN SWIPE DELETE (COMPLETE)
                     mAdapter.removeItem(position);
                     String KitchenOpen = getResources().getString(R.string.FireBase_Kitchen_Open_URL) + "/" + mSno;

@@ -12,8 +12,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -56,13 +59,14 @@ public class CashierAdapter extends FirebaseRecyclerAdapter<CashierAdapter.ViewH
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView vTextBillNo, vTextTotalAmount;
+        private TextView vTextBillNo, vTextTotalAmount,vTextTableNo;
         private RecyclerView recyclerView;
         private LinearLayout vCashierCard;
 
         public ViewHolder(View view) {
             super(view);
             vTextBillNo = (TextView) view.findViewById(R.id.textBillNo);
+            vTextTableNo = (TextView) view.findViewById(R.id.textTableNo);
             recyclerView = (RecyclerView) view.findViewById(R.id.cashier_list_recycler);
             vCashierCard = (LinearLayout) view.findViewById(R.id.cashier_card);
             vTextTotalAmount = (TextView) view.findViewById(R.id.textTotalAmount);
@@ -99,12 +103,13 @@ public class CashierAdapter extends FirebaseRecyclerAdapter<CashierAdapter.ViewH
         holder.vTextBillNo.setText(item.getOrderid());
         mOrderId = item.getOrderid();
 
-        holder.vTextTotalAmount.setText(item.getTotalamount() + "");
+        holder.vTextTotalAmount.setText("TOTAL AMOUNT : "+item.getTotalamount() + "");
 
         //TODO FIX SOME LATE BUG HERE
         holder.vCashierCard.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
                 if (cashierClickListner != null) {
                     mOrderId = item.getOrderid();
                     cashierClickListner.itemClicked(v, mOrderId, item.getSno(), item.getTableid(), item.getTotalamount());
@@ -124,6 +129,26 @@ public class CashierAdapter extends FirebaseRecyclerAdapter<CashierAdapter.ViewH
         holder.recyclerView.setLayoutManager(linearLayout);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
         holder.recyclerView.setAdapter(mMyAdapter);
+        holder.recyclerView.setEnabled(false);
+
+
+        String mActiveLink = context.getResources().getString(R.string.FireBase_Delivery_URL) + "/" + mOrderId;
+        final Firebase mRef = new Firebase(mActiveLink);
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean vExist = dataSnapshot.exists();
+                if (vExist) {
+                    Delivery post = dataSnapshot.getValue(Delivery.class);
+                    holder.vTextTableNo.setText("" + String.format("%1$.2f", post.getMobileno()).split("\\.")[0]);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
 
     }
 

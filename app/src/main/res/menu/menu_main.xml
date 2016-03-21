@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/action_filter"
-        android:icon="@drawable/vector_settings"
+        android:icon="@drawable/vector_filter"
         android:title="settings"
         app:showAsAction="always" />
 

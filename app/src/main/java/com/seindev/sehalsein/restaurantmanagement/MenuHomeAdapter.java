@@ -75,24 +75,132 @@ public class MenuHomeAdapter extends FirebaseRecyclerAdapter<MenuHomeAdapter.Vie
         final Menu item = getItem(position);
         //holder.vIngredients.setText(item.getCategory());
         holder.vDishName.setText(item.getDishname());
-
-//        holder.vIngredients.setTypeface(greatvibes);
+        //holder.vIngredients.setTypeface(greatvibes);
         holder.vDishName.setTypeface(milonga);
-
         //Picasso.with(context).load(R.drawable.rice).into(holder.vDishIcon);
-        Picasso.with(context).load(R.drawable.noimage).into(holder.vDishIcon);
+        final int dishimg = dishimage(item.getDishid());
+        Picasso.with(context).load(dishimg).resize(150, 150).into(holder.vDishIcon);
 
 
         holder.vMenuCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (menuClickListener != null) {
-                    menuClickListener.itemClicked(v, item.getDishid());
+                    menuClickListener.itemClicked(v, item.getDishid(),dishimg);
                 }
             }
         });
 
 
+    }
+
+    private int dishimage(String dishid) {
+        int mDishImage;
+        switch (dishid) {
+            case "K001":
+                mDishImage = R.drawable.blackcoffee;
+                break;
+            case "K002":
+                mDishImage = R.drawable.blacktea;
+                break;
+            case "K003":
+                mDishImage = R.drawable.coffee;
+                break;
+            case "K004":
+                mDishImage = R.drawable.tea;
+                break;
+            case "K005":
+                mDishImage = R.drawable.masalatea;
+                break;
+            case "K006":
+                mDishImage = R.drawable.tulsitea;
+                break;
+            case "K007":
+                mDishImage = R.drawable.gingertea;
+                break;
+            case "K008":
+                mDishImage = R.drawable.coffee;
+                break;
+            case "K009":
+                mDishImage = R.drawable.hotlimeginger;
+                break;
+            case "K010":
+                mDishImage = R.drawable.creamyhotchocolate;
+                break;
+            case "K011":
+                mDishImage = R.drawable.water;
+                break;
+            case "K012":
+                mDishImage = R.drawable.soda;
+                break;
+            case "K013":
+                mDishImage = R.drawable.limesoda;
+                break;
+            case "K014":
+                mDishImage = R.drawable.gingerlimesoda;
+                break;
+            case "K015":
+                mDishImage = R.drawable.sprite;
+                break;
+            case "K016":
+                mDishImage = R.drawable.coca;
+                break;
+            case "K017":
+                mDishImage = R.drawable.fanta;
+                break;
+            case "K018":
+                mDishImage = R.drawable.dietcoca;
+                break;
+            case "K019":
+                mDishImage = R.drawable.freshjuice;
+                break;
+            case "K020":
+                mDishImage = R.drawable.freshjuice;
+                break;
+            case "K021":
+                mDishImage = R.drawable.sweetlassi;
+                break;
+            case "K022":
+                mDishImage = R.drawable.saltlassi;
+                break;
+            case "K023":
+                mDishImage = R.drawable.banalassi;
+                break;
+            case "K024":
+                mDishImage = R.drawable.mangolassi;
+                break;
+            case "K025":
+                mDishImage = R.drawable.gingerale;
+                break;
+            case "K026":
+                mDishImage = R.drawable.tonicwater;
+                break;
+            case "K027":
+                mDishImage = R.drawable.nonalcoholic;
+                break;
+            case "K028":
+                mDishImage = R.drawable.nonalcoholic;
+                break;
+            case "K029":
+                mDishImage = R.drawable.caulifit;
+                break;
+            case "K030":
+                mDishImage = R.drawable.vegnugget;
+                break;
+            case "K031":
+                mDishImage = R.drawable.sautedmuhs;
+                break;
+            case "K032":
+                mDishImage = R.drawable.sautedaubergi;
+                break;
+            case "K033":
+                mDishImage = R.drawable.roastednuts;
+                break;
+            default:
+                mDishImage = R.drawable.noimage;
+        }
+
+        return mDishImage;
     }
 
     @Override

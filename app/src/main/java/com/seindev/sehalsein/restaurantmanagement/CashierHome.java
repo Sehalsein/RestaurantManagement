@@ -1,5 +1,6 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -125,7 +126,7 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
+                final int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT) {
                     mMyAdapter.removeItem(position);
@@ -140,19 +141,42 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
 
                 } else {
                     //KITCHEN SWIPE (COMPLETE)
-                    mMyAdapter.removeItem(position);
-                    String CashiernOpen = getResources().getString(R.string.FireBase_Cashier_Open_URL) + "/" + nSno;
-                    Firebase mDelete = new Firebase(CashiernOpen);
-                    mDelete.removeValue();
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(CashierHome.this);
+                    builder1.setMessage("PAID?");
+                    builder1.setCancelable(true);
 
-                    String TableClear = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableId;
-                    Firebase vDelete = new Firebase(TableClear);
-                    vDelete.removeValue();
+                    builder1.setPositiveButton(
+                            "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Toast.makeText(CashierHome.this, "Successfully Paid!!", Toast.LENGTH_LONG).show();
+                                    mMyAdapter.removeItem(position);
+                                    String CashiernOpen = getResources().getString(R.string.FireBase_Cashier_Open_URL) + "/" + nSno;
+                                    Firebase mDelete = new Firebase(CashiernOpen);
+                                    mDelete.removeValue();
 
-                    clearActice();
+                                    String TableClear = getResources().getString(R.string.FireBase_Order_URL) + "/" + mTableId;
+                                    Firebase vDelete = new Firebase(TableClear);
+                                    vDelete.removeValue();
 
+                                    clearActice();
+                                    clearKitcheOnline();
+                                    addBill();
+                                }
+                            });
 
-                    addBill();
+                    builder1.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Toast.makeText(CashierHome.this, "Ok", Toast.LENGTH_LONG).show();
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+
                     //initBillDetail();
 
                     /*
@@ -182,10 +206,10 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
                         RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
                         c.drawBitmap(icon, null, icon_dest, p);
                     } else {
-                        p.setColor(Color.parseColor("#D32F2F"));
+                        p.setColor(Color.parseColor("#388E3C"));
                         RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
                         c.drawRect(background, p);
-                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_white);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit_white);
                         RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
                         c.drawBitmap(icon, null, icon_dest, p);
                     }
@@ -195,6 +219,12 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+    private void clearKitcheOnline() {
+        String ActiveClear = getResources().getString(R.string.FireBase_Kitchen_Online_URL) + "/" + mTableId;
+        Firebase vDelete = new Firebase(ActiveClear);
+        vDelete.removeValue();
     }
 
     private void clearActice() {
@@ -208,11 +238,20 @@ public class CashierHome extends AppCompatActivity implements CashierClickListne
                 System.out.println("There are " + snapshot.getChildrenCount() + " KitchenOpen");
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Active post = postSnapshot.getValue(Active.class);
-                    if (mTableId.equals(post.getTableid())) {
-                        String ActiveClear = getResources().getString(R.string.FireBase_Active_URL) + "/" + post.getSno();
-                        Firebase vDelete = new Firebase(ActiveClear);
-                        vDelete.removeValue();
+                    try {
+                        if (mTableId.equals(post.getTableid())) {
+                            String ActiveClear = getResources().getString(R.string.FireBase_Active_URL) + "/" + post.getSno();
+                            Firebase vDelete = new Firebase(ActiveClear);
+                            vDelete.removeValue();
+                        }
+                    } catch (NullPointerException m) {
+                        System.out.println("LULL CASHIER HOOME " + m.toString());
+
+                    } catch (Exception e) {
+                        System.out.println("LULL CASHIER HOOME " + e.toString());
+
                     }
+
                 }
             }
 

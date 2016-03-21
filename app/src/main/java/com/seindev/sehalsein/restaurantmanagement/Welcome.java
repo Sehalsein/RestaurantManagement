@@ -1,14 +1,17 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
 import android.content.Intent;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -30,11 +33,14 @@ public class Welcome extends AppCompatActivity {
     private String mDishId;
     private String mCustomerId;
     private int mSno = 0;
-
+    private NfcAdapter nfcAdapter;
+    private ProgressBar mLoding;
 
     private float mTotalAmount;
 
-    //TEST
+    //VARIABLE
+    private Button mDineIn, mHomeDel;
+    private ImageView appIcon;
     private RadioButton mTable1, mTable2, mTable3, mTable4;
 
 
@@ -43,11 +49,20 @@ public class Welcome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
+        //INITIALIZING VARIABLE
         ImageView welcomebg = (ImageView) findViewById(R.id.welcomebackground);
-        ImageView appIcon = (ImageView) findViewById(R.id.imageViewLogo);
+        appIcon = (ImageView) findViewById(R.id.imageViewLogo);
+        mLoding = (ProgressBar) findViewById(R.id.progressBar);
+        mDineIn = (Button) findViewById(R.id.buttonDineIn);
+        mHomeDel = (Button) findViewById(R.id.buttonDelivery);
 
+        //SETING IT TO FALSE
+        mDineIn.setEnabled(false);
+        mHomeDel.setEnabled(false);
+        appIcon.setEnabled(false);
+
+        //TABLE CHOOSING
         mTableId = getResources().getString(R.string.TableId);
-        //TEST
         mTable1 = (RadioButton) findViewById(R.id.radioButton);
         mTable1.setChecked(true);
         mTable1.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +94,7 @@ public class Welcome extends AppCompatActivity {
         });
         RadioGroup group = (RadioGroup) findViewById(R.id.radiogroup);
 
+
         Picasso.with(this).load(R.drawable.welcomebg).resize(500, 800).into(welcomebg, new Callback() {
             @Override
             public void onSuccess() {
@@ -92,13 +108,14 @@ public class Welcome extends AppCompatActivity {
         });
         // Picasso.with(this).load(R.drawable.welcomebg).transform(new Blur(this, 20)).into(welcomebg);
 
+        //FIREBASE INITIALIZING METHODS
         initOrderId();
         initCustomer();
         initActive();
 
-
     }
 
+    //CHEKING ACTIVE USERS
     private void initActive() {
         String mActiveLink = getResources().getString(R.string.FireBase_Active_URL);
         final Firebase mRef = new Firebase(mActiveLink);
@@ -106,6 +123,7 @@ public class Welcome extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean vExist = dataSnapshot.exists();
+                //CHECKS IF THE VALUE EXIST OR NOT
                 if (vExist) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         Active post = postSnapshot.getValue(Active.class);
@@ -116,6 +134,11 @@ public class Welcome extends AppCompatActivity {
                     mSno = 0;
                 }
 
+                //ENABLING EVERYTHING
+                mLoding.setVisibility(View.INVISIBLE);
+                mDineIn.setEnabled(true);
+                mHomeDel.setEnabled(true);
+                appIcon.setEnabled(true);
             }
 
             @Override
@@ -126,8 +149,8 @@ public class Welcome extends AppCompatActivity {
 
     }
 
+    //INITALIZING CUSTOMER TABLE
     private void initCustomer() {
-
         String mOrderLink = getResources().getString(R.string.FireBase_Customer_URL);
         final Firebase mRef = new Firebase(mOrderLink);
         mRef.addValueEventListener(new ValueEventListener() {
@@ -144,11 +167,9 @@ public class Welcome extends AppCompatActivity {
                     mCustomerId = CustomerNumberCalc(result);
                     System.out.println("CUSTOMER ID : " + mCustomerId);
                 } else {
-
                     mCustomerId = getResources().getString(R.string.CustomerId);
                     System.out.println("CUSTOMER ID : " + mCustomerId);
                 }
-
             }
 
             @Override
@@ -156,7 +177,6 @@ public class Welcome extends AppCompatActivity {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
-
     }
 
     //FORMATES ORDERNO TO ORDERID
@@ -240,7 +260,7 @@ public class Welcome extends AppCompatActivity {
         constant.setService(mService);
         constant.setCustomerId(mCustomerId);
 
-        Toast.makeText(Welcome.this, "TABLE ID : " + mTableId, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(Welcome.this, "TABLE ID : " + mTableId, Toast.LENGTH_SHORT).show();
         ++mSno;
         String mActiveLink = getResources().getString(R.string.FireBase_Active_URL);
         Firebase mRef = new Firebase(mActiveLink).child(mSno + "");
@@ -269,8 +289,18 @@ public class Welcome extends AppCompatActivity {
         constant.setService(mService);
         constant.setCustomerId(mCustomerId);
 
-        startActivity(new Intent(Welcome.this, MenuHome.class));
+        startActivity(new Intent(Welcome.this, HomeDeliveryDetail.class));
         finish();
     }
 
+    private void getTagInfo(Intent intent) {
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        Log.e("jaks", "getTagInfo: " + tag.toString());
+        finish();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        getTagInfo(intent);
+    }
 }

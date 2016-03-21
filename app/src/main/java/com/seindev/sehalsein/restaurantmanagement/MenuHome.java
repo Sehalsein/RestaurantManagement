@@ -3,6 +3,7 @@ package com.seindev.sehalsein.restaurantmanagement;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -48,6 +49,8 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
     private MenuHomeAdapter mAdapter;
     private ArrayList<Menu> mAdapterItems;
     private ArrayList<String> mAdapterKeys;
+    RecyclerView recyclerView;
+    boolean doubleBackToExitPressedOnce = false;
 
 
     @Override
@@ -160,20 +163,21 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
 
         String firebaseLocation = getResources().getString(R.string.FireBase_Menu_URL);
         //QUERY
+        mCategory = constant.getCategory();
         if (mCategory == null) {
-            Toast.makeText(this, "FASLE" + mCategory, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "FASLE" + mCategory, Toast.LENGTH_LONG).show();
             mQuery = new Firebase(firebaseLocation);
 
         } else {
-            Toast.makeText(this, "TRYU" + mCategory, Toast.LENGTH_LONG).show();
-            mQuery = new Firebase(firebaseLocation).orderByChild("category").equalTo("Seafood");
+            //Toast.makeText(this, "TRYU" + mCategory, Toast.LENGTH_SHORT).show();
+            mQuery = new Firebase(firebaseLocation).orderByChild("category").equalTo(mCategory);
         }
 
     }
 
     //Initializing Recycler View
     private void initRecyclerView() {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.menu_recycler);
+        recyclerView = (RecyclerView) findViewById(R.id.menu_recycler);
         mAdapter = new MenuHomeAdapter(mQuery, Menu.class, mAdapterItems, mAdapterKeys, this);
         mAdapter.setMenuClickListener(this);
 
@@ -190,6 +194,7 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
             linearLayout.setOrientation(GridLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(linearLayout);
             recyclerView.setAdapter(mAdapter);
+            recyclerView.setItemViewCacheSize(15);
         } else {
             //Toast.makeText(this, "Screen size is normal", Toast.LENGTH_LONG).show();
             LinearLayoutManager linearLayout = new LinearLayoutManager(this);
@@ -197,17 +202,16 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
             recyclerView.setLayoutManager(linearLayout);
             recyclerView.setAdapter(mAdapter);
 
+
         }
 
-
         //Toast.makeText(this, "Screen size is neither large, normal or small", Toast.LENGTH_LONG).show();
-
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_menu_home, menu);
 
         //TODO SHOPPING CART INCREMENT 
         //menu.findItem(R.id.action_settings).setIcon(R.drawable.vector_shopping_cart);
@@ -220,9 +224,23 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 startActivity(new Intent(MenuHome.this, ShoppingCartHome.class));
+                constant.setCategory("Seafood");
+                //if (mAdapter != null) {
+                //   mAdapter.destroy();
+                // }
+                //test();
+                //startActivity(new Intent(MenuHome.this, Filter.class));
+                //finish();
                 return true;
             case R.id.action_filter:
-                startActivity(new Intent(MenuHome.this, Filter.class));
+                //startActivity(new Intent(MenuHome.this, Filter.class));
+                constant.setCategory("Beverages");
+                if (mAdapter != null) {
+                    mAdapter.destroy();
+                }
+                //test();
+                //startActivity(new Intent(MenuHome.this, Filter.class));
+                //finish();
                 return true;
 
             default:
@@ -242,14 +260,60 @@ public class MenuHome extends AppCompatActivity implements MenuClickListener {
     }
 
     @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mAdapter.destroy();
     }
 
+    //Initializing Recycler View
+    private void test() {
+
+        String firebaseLocation = getResources().getString(R.string.FireBase_Menu_URL);
+        //QUERY
+        mCategory = constant.getCategory();
+        if (mCategory == null) {
+            // Toast.makeText(this, "FASLE" + mCategory, Toast.LENGTH_LONG).show();
+            mQuery = new Firebase(firebaseLocation);
+
+        } else {
+            //Toast.makeText(this, "TRYU" + mCategory, Toast.LENGTH_SHORT).show();
+            mQuery = new Firebase(firebaseLocation).orderByChild("category").equalTo(mCategory);
+        }
+        recyclerView = (RecyclerView) findViewById(R.id.menu_recycler);
+        mAdapter = new MenuHomeAdapter(mQuery, Menu.class, mAdapterItems, mAdapterKeys, this);
+        mAdapter.setMenuClickListener(this);
+
+        LinearLayoutManager linearLayout = new LinearLayoutManager(this);
+        linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayout);
+        recyclerView.setAdapter(mAdapter);
+
+
+    }
+
     @Override
-    public void itemClicked(View view, String DishId) {
+    public void itemClicked(View view, String DishId, int ImageId) {
         constant.setDishId(DishId);
+        constant.setImageid(ImageId);
         startActivity(new Intent(MenuHome.this, ItemDetail.class));
     }
 }

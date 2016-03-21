@@ -1,5 +1,6 @@
 package com.seindev.sehalsein.restaurantmanagement;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
     //Variable
     private int mTotalAmount;
     private int mSno;
+    Boolean click;
 
     //Recycler View
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
@@ -83,6 +85,7 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
         initRecycler();
         initKitchenOpenDetail();
 
+
     }
 
     private void initKitchenOpenDetail() {
@@ -126,7 +129,7 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
     @Override
     public void send(int TotalAmount) {
         mTotalAmount = TotalAmount;
-        vTotalAmount.setText("RS " + TotalAmount);
+        vTotalAmount.setText("\u20B9 " + TotalAmount);
     }
 
     //Firebase Query
@@ -153,7 +156,7 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
             //Toast.makeText(ShoppingCartHome.this, "SNO if eqquals : " + mSno, Toast.LENGTH_LONG).show();
             ++mSno;
         }
-
+        click = true;
         String FireBaseLink = getResources().getString(R.string.FireBase_Kitchen_Open_URL);
         Firebase mRef = new Firebase(FireBaseLink);
         Firebase aRef = mRef.child(mSno + "");
@@ -166,10 +169,73 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
                     //Toast.makeText(ShoppingCartHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
                 } else {
                     System.out.println("Data saved successfully.");
-                    //Toast.makeText(ShoppingCartHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                    orderDetail();
+
+                    //TODO TRY A DIFFRENT APPROACH
+                    Intent intent = new Intent(ShoppingCartHome.this, MenuHome.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    // startActivity(intent);
+                    finish();
                 }
             }
         });
-        onBackPressed();
+
+
+    }
+
+    private void orderDetail() {
+        final String mOrderLink = getResources().getString(R.string.FireBase_Order_URL);
+        final Firebase mRef = new Firebase(mOrderLink);
+        Firebase kRef = mRef.child(mTableId);
+        kRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Order post = postSnapshot.getValue(Order.class);
+                    addKitchenOrder(post.getDishid(), post.getQuanity());
+                }
+                //STOPPING YHE LOOP
+                click = false;
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private void addKitchenOrder(String dishid, int quanity) {
+        if (click) {
+            //Toast.makeText(ShoppingCartHome.this, "DISH IDsadsadasdas : " + dishid, Toast.LENGTH_SHORT).show();
+            String FireBaseLink = getResources().getString(R.string.FireBase_Kitchen_Online_URL);
+            Firebase mRef = new Firebase(FireBaseLink);
+            Firebase aRef = mRef.child(mTableId + "").child(dishid + "");
+            KitchenOnline order = new KitchenOnline(dishid, quanity, mTableId);
+            aRef.setValue(order, new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError != null) {
+                        System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                        //Toast.makeText(ShoppingCartHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                    } else {
+                        System.out.println("Data saved successfully.");
+                        //Toast.makeText(ShoppingCartHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+
+        //return;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }

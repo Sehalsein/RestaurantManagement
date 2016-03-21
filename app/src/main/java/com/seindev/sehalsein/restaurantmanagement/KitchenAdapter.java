@@ -13,8 +13,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -112,12 +115,31 @@ public class KitchenAdapter extends FirebaseRecyclerAdapter<KitchenAdapter.ViewH
         initFirebase(mOrderId);
 
         //Initializing Inner recycler View
-        mMyAdapter = new KitchenItemAdapter(mQuery, Order.class, mAdapterItems, mAdapterKeys);
+        mMyAdapter = new KitchenItemAdapter(mQuery, Order.class, mAdapterItems, mAdapterKeys, context);
         LinearLayoutManager linearLayout = new LinearLayoutManager(context);
         linearLayout.setOrientation(LinearLayoutManager.VERTICAL);
         holder.recyclerView.setLayoutManager(linearLayout);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
         holder.recyclerView.setAdapter(mMyAdapter);
+        holder.recyclerView.setEnabled(false);
+
+        String mActiveLink = context.getResources().getString(R.string.FireBase_Delivery_URL) + "/" + mOrderId;
+        final Firebase mRef = new Firebase(mActiveLink);
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean vExist = dataSnapshot.exists();
+                if (vExist) {
+                    Delivery post = dataSnapshot.getValue(Delivery.class);
+                    holder.vTextTableNo.setText("" + String.format("%1$.2f", post.getMobileno()).split("\\.")[0]);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
 
     }
 

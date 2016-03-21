@@ -44,7 +44,7 @@ public class AddReviewHome extends AppCompatActivity implements View.OnClickList
     //RATINGS
     private ImageView image10, image20, image30, image40, image50, image60, image70, image80, image90, image100;
     private TextView vRating;
-    private float mRating;
+    private float mRating = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,10 +211,10 @@ public class AddReviewHome extends AppCompatActivity implements View.OnClickList
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
                     System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                   // Toast.makeText(AddReviewHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                    // Toast.makeText(AddReviewHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
                 } else {
                     System.out.println("Data saved successfully.");
-                   // Toast.makeText(AddReviewHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                    // Toast.makeText(AddReviewHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -224,26 +224,41 @@ public class AddReviewHome extends AppCompatActivity implements View.OnClickList
     private void addReview() {
 
         mReview = vReview.getText().toString();
-
-        String mFirebaseUrl = getResources().getString(R.string.FireBase_Review_URL);
-        Firebase firebase = new Firebase(mFirebaseUrl);
-        Firebase mRef = firebase.child(mDishId).child(mSno + "");
-
-        Review review = new Review(mSno, mCustomerId, mDishId, mRating, mReview, mDate);
-
-        mRef.setValue(review, new Firebase.CompletionListener() {
-            @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                if (firebaseError != null) {
-                    System.out.println("Data could not be saved. " + firebaseError.getMessage());
-                   // Toast.makeText(AddReviewHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
-                } else {
-                    System.out.println("Data saved successfully.");
-                   // Toast.makeText(AddReviewHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
-                }
+        if (vReview.getText().toString().trim().length() <= 0) {
+            mReview = "";
+        }
+        if (vCustomerName.getText().toString().trim().length() <= 0) {
+            mCustomerName = "";
+        }
+        if (mReview == "" || mCustomerName == "") {
+            if (mReview == "") {
+                vReview.setError("Enter Review");
             }
-        });
+            if (mCustomerName == "") {
+                vCustomerName.setError("Enter Customer Name");
+            }
 
+        } else {
+            String mFirebaseUrl = getResources().getString(R.string.FireBase_Review_URL);
+            Firebase firebase = new Firebase(mFirebaseUrl);
+            Firebase mRef = firebase.child(mDishId).child(mSno + "");
+
+            Review review = new Review(mSno, mCustomerId, mDishId, mRating, mReview, mDate);
+
+            mRef.setValue(review, new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError != null) {
+                        System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                        // Toast.makeText(AddReviewHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
+                    } else {
+                        System.out.println("Data saved successfully.");
+                        onBackPressed();
+                        //Toast.makeText(AddReviewHome.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
     }
 
 

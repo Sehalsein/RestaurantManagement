@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -46,7 +47,7 @@ public class AddItemHome extends AppCompatActivity {
 
         vSno.setEnabled(false);
         vDishId.requestFocus();
-
+        vPrice.setText("0.00");
         //INPUT TYPES
         //DISHNAME
         vDishName.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -95,10 +96,10 @@ public class AddItemHome extends AppCompatActivity {
 
     public void Additem(View view) {
 
-        String mDishName, mCategory, mDishId, mDescription;
-        String mImageUrl;
+        String mDishName = null, mCategory = null, mDishId = null, mDescription = null;
+        String mImageUrl = null;
         float mPrice = 0;
-        int mSno, mSpicyLevel = 0;
+        int mSno = 0, mSpicyLevel = 0;
 
         final int[] Sno = new int[1];
 
@@ -111,9 +112,6 @@ public class AddItemHome extends AppCompatActivity {
             mDescription = vDescription.getText().toString();
             mImageUrl = vImageUrl.getText().toString();
 
-            if (vSno.getText().toString().trim().length() <= 0) {
-                mSno = 0;
-            }
             if (vDishId.getText().toString().trim().length() <= 0) {
                 mDishId = "";
             }
@@ -131,6 +129,9 @@ public class AddItemHome extends AppCompatActivity {
             }
             if (vImageUrl.getText().toString().trim().length() <= 0) {
                 mImageUrl = "";
+            }
+            if (mPrice==0.00){
+                mPrice = 0;
             }
             Firebase mRef = new Firebase("https://restaurant-managment.firebaseio.com");
             Firebase Ref = mRef.child("Menu").child(mSno + "");
@@ -155,9 +156,7 @@ public class AddItemHome extends AppCompatActivity {
                 if (mImageUrl == "") {
                     vImageUrl.setError("Enter Image URL!!");
                 }
-
             } else {
-
                 Menu menu = new Menu(mSno, mDishId, mDishName, mPrice, mCategory, mDescription, mImageUrl);
 
                 Ref.setValue(menu, new Firebase.CompletionListener() {
@@ -168,6 +167,7 @@ public class AddItemHome extends AppCompatActivity {
                             //Toast.makeText(AddItemHome.this, "ITEM Data could not be saved. ", Toast.LENGTH_LONG).show();
                         } else {
                             System.out.println("Data saved successfully.");
+                            Toast.makeText(AddItemHome.this, "Data saved successfully!!", Toast.LENGTH_SHORT).show();
                             vDishId.setText("");
                             vDishName.setText("");
                             vPrice.setText("");
