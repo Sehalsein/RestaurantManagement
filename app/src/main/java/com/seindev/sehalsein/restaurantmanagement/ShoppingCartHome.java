@@ -29,13 +29,14 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
     private String nOrderId;
 
     //XML Variable
-    private TextView vTotalAmount;
+    private TextView vTotalAmount, vService;
     private TextView vHeader;
 
     //Variable
     private int mTotalAmount;
     private int mSno;
     Boolean click;
+    private int mServiceTax;
 
     //Recycler View
     private final static String SAVED_ADAPTER_ITEMS = "SAVED_ADAPTER_ITEMS";
@@ -67,6 +68,7 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
 
         vTotalAmount = (TextView) findViewById(R.id.textTotalAmount);
         vHeader = (TextView) findViewById(R.id.textOrderHeader);
+        vService = (TextView) findViewById(R.id.textService);
 
         lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
         vHeader.setTypeface(lobster);
@@ -128,8 +130,10 @@ public class ShoppingCartHome extends AppCompatActivity implements ShoppingClick
 
     @Override
     public void send(int TotalAmount) {
-        mTotalAmount = TotalAmount;
-        vTotalAmount.setText("\u20B9 " + TotalAmount);
+        mServiceTax = TotalAmount * 13 / 100;
+        mTotalAmount = TotalAmount + mServiceTax;
+        vService.setText("\u20B9" + mServiceTax);
+        vTotalAmount.setText("\u20B9" + mTotalAmount);
     }
 
     //Firebase Query
